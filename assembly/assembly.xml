@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+    <id>schemas</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <fileSets>
+        <fileSet>
+            <outputDirectory>hdp-capability-registry-api/schema/example</outputDirectory>
+            <directory>src/main/resources/hdp-capability-registry-api/schema/example</directory>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>hdp-capability-registry-api/schema/json</outputDirectory>
+            <directory>src/main/resources/hdp-capability-registry-api/schema/json</directory>
+        </fileSet>
+    </fileSets>
+</assembly>
