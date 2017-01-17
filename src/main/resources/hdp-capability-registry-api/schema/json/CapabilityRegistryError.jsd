@@ -1,0 +1,19 @@
+{
+    "type": "object",
+    "properties": {
+        "code": {
+            "type": "string",
+            "title": "Error code",
+            "description": "The error code provided by the service."
+        },
+        "message": {
+            "type": "string",
+            "title": "Error message",
+            "description": "The error details provided by the service."
+        }
+    },
+    "required": [
+        "code",
+        "message"
+    ]
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "DataProvidersFoundMessage",
+  "description": "Message with the list of registered HAL Data Provider capability profiles.",
+  "_meta": {
+    "message": "com.dell.cpsd.hdp.data.providers.found.response",
+    "version": "1.0"
+  },
+  "properties": {
+    "messageProperties": {
+      "$ref": "MessageProperties.jsd"
+    },
+    "hostname": {
+      "type": "string"
+    },
+    "dataProviders": {
+        "type": "array",
+        "items": {
+            "$ref": "DataProvider.jsd"
+        }
+    }
+  },
+  "required": [
+    "messageProperties"
+  ]
+}

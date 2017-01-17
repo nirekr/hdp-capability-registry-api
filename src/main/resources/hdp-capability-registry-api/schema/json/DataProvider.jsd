@@ -1,0 +1,16 @@
+{
+    "type": "object",
+    "properties": {
+        "providerIdentity": {
+            "$ref": "ProviderIdentity.jsd"
+        },
+        "providerCapabilities": {
+            "type": "array",
+            "items": {
+                "$ref": "ProviderCapability.jsd"
+            }
+        }
+    },
+    "required": [
+    ]
+}

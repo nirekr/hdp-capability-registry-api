@@ -1,0 +1,19 @@
+{
+    "type": "object",
+    "properties": {
+        "profile": {
+            "type": "string"
+        },
+        "type": {
+            "type": "string"
+        },
+        "family": {
+            "type": "string"
+        },
+        "series": {
+            "type": "string"
+        }
+    },
+    "required": [
+    ]
+}

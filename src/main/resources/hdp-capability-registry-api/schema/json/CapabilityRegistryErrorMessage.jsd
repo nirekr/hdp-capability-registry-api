@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "CapabilityRegistryErrorMessage",
+  "description": "The message sent when there is an error in the capability registry.",
+  "_meta": {
+    "message": "com.dell.cpsd.hdp.capability.registry.error",
+    "version": "1.0"
+  },
+  "properties": {
+    "messageProperties": {
+      "$ref": "MessageProperties.jsd"
+    },
+    "hostname": {
+      "type": "string",
+      "javaName": "hostname",
+      "title": "Hostname",
+      "description": "The name of the registry host."
+    },
+    "errors": {
+        "type": "array",
+        "items": {
+            "$ref": "CapabilityRegistryError.jsd"
+        }
+    }
+  },
+  "required": [
+    "messageProperties",
+    "errors"
+  ]
+}

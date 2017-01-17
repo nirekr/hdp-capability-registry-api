@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "RegisterDataProviderMessage",
+  "description": "Message to register HAL Data Provider capability profiles.",
+  "_meta": {
+    "message": "com.dell.cpsd.hdp.register.data.provider.request",
+    "version": "1.0"
+  },
+  "properties": {
+    "messageProperties": {
+      "$ref": "MessageProperties.jsd"
+    },
+    "hostname": {
+      "type": "string"
+    },
+    "dataProvider": {
+      "$ref": "DataProvider.jsd"
+    }
+  },
+  "required": [
+    "messageProperties",
+    "dataProvider"
+  ]
+}

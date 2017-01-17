@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "UnregisterDataProviderMessage",
+  "description": "Message to unregister HAL Data Provider capability profiles.",
+  "_meta": {
+    "message": "com.dell.cpsd.hdp.unregister.data.provider.request",
+    "version": "1.0"
+  },
+  "properties": {
+    "messageProperties": {
+      "$ref": "MessageProperties.jsd"
+    },
+    "hostname": {
+      "type": "string"
+    },
+    "providerIdentity": {
+      "$ref": "ProviderIdentity.jsd"
+    }
+  },
+  "required": [
+    "messageProperties",
+    "providerIdentity"
+  ]
+}
