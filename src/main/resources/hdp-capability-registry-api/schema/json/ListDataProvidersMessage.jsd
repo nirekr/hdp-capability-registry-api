@@ -8,14 +8,10 @@
     "version": "1.0"
   },
   "properties": {
-    "messageProperties": {
-      "$ref": "MessageProperties.jsd"
-    },
     "hostname": {
       "type": "string"
     }
   },
   "required": [
-    "messageProperties"
   ]
 }

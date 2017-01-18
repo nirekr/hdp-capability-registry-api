@@ -30,7 +30,7 @@ import com.dell.cpsd.hdp.capability.registry.api.UnregisterDataProviderMessage;
 
 import com.dell.cpsd.common.rabbitmq.processor.PropertiesPostProcessor;
 
-import com.dell.cpsd.hdp.capability.registry.client.amqp.message.DefaultMessageProperties;
+import com.dell.cpsd.common.rabbitmq.message.DefaultMessageProperties;
 
 /**
  * This is the message producer that sends messages to the service.
@@ -112,15 +112,15 @@ public class AmqpCapabilityRegistryProducer implements IAmqpCapabilityRegistryPr
         throws CapabilityRegistryException
     {
         final DefaultMessageProperties messageProperties = 
-                new DefaultMessageProperties(this.calendar.getTime(), correlationId, "");
+                new DefaultMessageProperties(this.calendar.getTime(), correlationId);
         
         final DataProvider dataProvider = new DataProvider(identity, capabilities);
         
         final RegisterDataProviderMessage message = new RegisterDataProviderMessage(
-                messageProperties, this.getHostname(), dataProvider);
+                this.getHostname(), dataProvider);
 
         final PropertiesPostProcessor messagePostProcessor = 
-                            new PropertiesPostProcessor(messageProperties);
+                                new PropertiesPostProcessor(messageProperties);
 
         if (LOGGER.isDebugEnabled())
         {
@@ -156,10 +156,10 @@ public class AmqpCapabilityRegistryProducer implements IAmqpCapabilityRegistryPr
         throws CapabilityRegistryException
     {
         final DefaultMessageProperties messageProperties = 
-                new DefaultMessageProperties(this.calendar.getTime(), correlationId, "");
+                new DefaultMessageProperties(this.calendar.getTime(), correlationId);
         
         final UnregisterDataProviderMessage message = new UnregisterDataProviderMessage(
-                messageProperties, this.getHostname(), identity);
+                this.getHostname(), identity);
 
         final PropertiesPostProcessor messagePostProcessor = 
                                 new PropertiesPostProcessor(messageProperties);
