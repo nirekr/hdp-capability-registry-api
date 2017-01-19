@@ -36,7 +36,7 @@ public class HDCRMessageBundle extends ListResourceBundle
             {"HDCR2010E", "HDCR2010E The service request [{0}] has timed out after [{1}] msec."},
             {"HDCR2011E", "HDCR2011E Could not publish the message. Reason [{0}]"},
             {"HDCR2012E", "HDCR2012E Unexpected error on callback [{0}]. Reason [{1}]"}, 
-            {"HDCR2013E", "HDCR2013E ."},
+            {"HDCR2013W", "HDCR2013W The message to process is null."},
             {"HDCR2014E", "HDCR2014E ."}, 
             {"HDCR2015E", "HDCR2015E ."},
             {"HDCR2016E", "HDCR2016E The client is shutting down. Requests are not being accepted."}, 

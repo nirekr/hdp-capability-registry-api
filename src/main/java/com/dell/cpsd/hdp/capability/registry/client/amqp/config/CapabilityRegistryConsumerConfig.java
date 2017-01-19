@@ -5,11 +5,12 @@
 
 package com.dell.cpsd.hdp.capability.registry.client.amqp.config;
 
-import com.dell.cpsd.common.logging.ILogger;
-import com.dell.cpsd.common.rabbitmq.retrypolicy.RetryPolicyExceptionUnpackerDelegate;
+import java.util.HashMap;
+import java.util.Map;
 
-//import com.dell.cpsd.hal.data.provider.client.amqp.consumer.AmqpHalDataProviderConsumer;
-//import com.dell.cpsd.hal.data.provider.client.amqp.consumer.IAmqpHalDataProviderConsumer;
+import com.dell.cpsd.common.logging.ILogger;
+
+import com.dell.cpsd.common.rabbitmq.retrypolicy.RetryPolicyExceptionUnpackerDelegate;
 
 import com.dell.cpsd.hdp.capability.registry.client.log.HDCRLoggingManager;
 import com.dell.cpsd.hdp.capability.registry.client.log.HDCRMessageCode;
@@ -38,10 +39,10 @@ import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.util.ErrorHandler;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.dell.cpsd.common.rabbitmq.consumer.handler.DefaultMessageListenerAdapter;
 
-
+import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.AmqpCapabilityRegistryConsumer;
+import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryConsumer;
 
 /**
  * The configuration for the message consumers.
@@ -74,53 +75,61 @@ public class CapabilityRegistryConsumerConfig
     @Autowired
     private MessageConverter capabilityRegistryMessageConverter;
 
-//    /*
-//     * The queue for the service response messages.
-//     */
-//    @Autowired
-//    @Qualifier("halDataProviderDiscoverRequestQueue")
-//    private Queue halDataProviderDiscoverRequestQueue;
-//
-//    /*
-//     * The message queue binding for the service response messages.
-//     */
-//    @Autowired
-//    private Binding halDataProviderDiscoverRequestQueueBinding;
+    /*
+     * The queue for the service response messages.
+     */
+    @Autowired
+    private Queue capabilityRegistryResponseQueue;
+
+    /*
+     * The message queue binding for the service response messages.
+     */
+    @Autowired
+    private Binding capabilityRegistryResponseQueueBinding;
+
+
+    /**
+     * The service response message listener container.
+     *
+     * @return  The service response message listener container.
+     * 
+     * @since   1.0
+     */
+    @Bean
+    SimpleMessageListenerContainer capabilityRegistryServiceListenerContainer()
+    {
+        final SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+        container.setConnectionFactory(rabbitConnectionFactory);
+        container.setAcknowledgeMode(AcknowledgeMode.AUTO);
+        container.setQueues(capabilityRegistryResponseQueue);
+        container.setAdviceChain(new Advice[] {retryPolicy()});
+        
+        final DefaultMessageListenerAdapter messageListenerAdapter = 
+                new DefaultMessageListenerAdapter(capabilityRegistryServiceConsumer(), 
+                        capabilityRegistryMessageConverter);
+        
+        container.setMessageListener(messageListenerAdapter);
+        container.setErrorHandler(errorHandler("capabilityRegistryListenerContainer"));
+
+        return container;
+    }
     
 
-//    /**
-//     * The service response message listener container.
-//     *
-//     * @return The service response message listener container.
-//     * @since SINCE-TBD
-//     */
-//    @Bean
-//    SimpleMessageListenerContainer halDataProviderListenerContainer()
-//    {
-//        final SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-//        container.setConnectionFactory(rabbitConnectionFactory);
-//        container.setAcknowledgeMode(AcknowledgeMode.AUTO);
-//        container.setQueues(halDataProviderDiscoverRequestQueue);
-//        container.setAdviceChain(new Advice[] {retryPolicy()});
-//        container.setMessageListener(new MessageListenerAdapter(halDataProviderConsumer(), halDataProviderMessageConverter));
-//        container.setErrorHandler(errorHandler("halDataProviderListenerContainer"));
-//
-//        return container;
-//    }
-//
-//    /**
-//     * The message consumer for the service responses.
-//     *
-//     * @return The message consumer for the service responses.
-//     * @since SINCE-TBD
-//     */
-//    @Bean
-//    IAmqpHalDataProviderConsumer halDataProviderConsumer()
-//    {
-//        final String routingKey = this.halDataProviderDiscoverRequestQueueBinding.getRoutingKey();
-//
-//        return new AmqpHalDataProviderConsumer(routingKey);
-//    }
+    /**
+     * The message consumer for the service responses.
+     *
+     * @return  The message consumer for the service responses.
+     * @since   1.0
+     */
+    @Bean
+    IAmqpCapabilityRegistryConsumer capabilityRegistryServiceConsumer()
+    {
+        final String replyTo = 
+                    this.capabilityRegistryResponseQueueBinding.getRoutingKey();
+
+        return new AmqpCapabilityRegistryConsumer(replyTo);
+    }
+    
 
     /**
      * The error handler for the service response listener container.

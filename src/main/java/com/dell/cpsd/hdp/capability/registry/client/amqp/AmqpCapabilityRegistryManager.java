@@ -8,18 +8,42 @@ package com.dell.cpsd.hdp.capability.registry.client.amqp;
 import java.util.List;
 import java.util.UUID;
 
+import com.dell.cpsd.common.logging.ILogger;
+
+import com.dell.cpsd.hdp.capability.registry.client.log.HDCRLoggingManager;
+import com.dell.cpsd.hdp.capability.registry.client.log.HDCRMessageCode;
+
 import com.dell.cpsd.hdp.capability.registry.api.ProviderCapability;
 import com.dell.cpsd.hdp.capability.registry.api.ProviderIdentity;
+import com.dell.cpsd.hdp.capability.registry.api.DataProvider;
+import com.dell.cpsd.hdp.capability.registry.api.DataProvidersFoundMessage;
 
 import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilityRegistryProducer;
 
+import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryConsumer;
 import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryMessageHandler;
 
 import com.dell.cpsd.hdp.capability.registry.client.CapabilityRegistryException;
 import com.dell.cpsd.hdp.capability.registry.client.ICapabilityRegistryManager;
+import com.dell.cpsd.hdp.capability.registry.client.ICapabilityRegistryConfiguration;
+
+import com.dell.cpsd.service.common.client.callback.IServiceCallback;
+import com.dell.cpsd.service.common.client.callback.ServiceCallback;
+import com.dell.cpsd.service.common.client.callback.ServiceError;
+import com.dell.cpsd.service.common.client.callback.ServiceTimeout;
+
+import com.dell.cpsd.service.common.client.exception.ServiceTimeoutException;
+
+import com.dell.cpsd.service.common.client.task.ServiceTask;
+
+import com.dell.cpsd.service.common.client.manager.AbstractServiceCallbackManager;
+
+import com.dell.cpsd.hdp.capability.registry.client.callback.ListDataProvidersResponse;
+
+import com.dell.cpsd.common.rabbitmq.message.MessagePropertiesContainer;
 
 /**
- * This is the base exception for the service client.
+ * This is a capability register service client.
  * <p>
  * <p/>
  * Copyright &copy; 2017 Dell Inc. or its subsidiaries. All Rights Reserved.
@@ -29,32 +53,57 @@ import com.dell.cpsd.hdp.capability.registry.client.ICapabilityRegistryManager;
  * 
  * @since   SINCE-TBD
  */
-public class AmqpCapabilityRegistryManager implements IAmqpCapabilityRegistryMessageHandler, ICapabilityRegistryManager
+public class AmqpCapabilityRegistryManager extends AbstractServiceCallbackManager 
+        implements IAmqpCapabilityRegistryMessageHandler, ICapabilityRegistryManager
 {
+    /*
+     * The logger for this class.
+     */
+    private static final ILogger LOGGER = 
+            HDCRLoggingManager.getLogger(AmqpCapabilityRegistryManager.class);
+    
+    /*
+     * The configuration used by this service manager
+     */
+    private ICapabilityRegistryConfiguration configuration              = null;
+
     /*
      * The capability registry message producer.
      */
-    private IAmqpCapabilityRegistryProducer capabilityRegistryProducer;
+    private IAmqpCapabilityRegistryProducer  capabilityRegistryProducer = null;
+    
+    /*
+     * The capability registry message consumer.
+     */
+    private IAmqpCapabilityRegistryConsumer  capabilityRegistryConsumer = null;
     
     
     /**
      * AmqpCapabilityRegistryManager constructor.
      * 
-     * @param   capabilityRegistryProducer  The capability registry producer.
+     * @param   configuration   The capability registry configuration.
      * 
      * @since   1.0
      */
     public AmqpCapabilityRegistryManager(
-            final IAmqpCapabilityRegistryProducer capabilityRegistryProducer)
+                        final ICapabilityRegistryConfiguration configuration)
     {
         super();
         
-        if (capabilityRegistryProducer == null)
+        if (configuration == null)
         {
-            throw new IllegalArgumentException("The capability registry producer is null.");
+            throw new IllegalArgumentException("The configuration is not set.");
         }
         
-        this.capabilityRegistryProducer = capabilityRegistryProducer;
+        this.configuration = configuration;
+       
+        this.capabilityRegistryProducer = 
+                            this.configuration.getCapabilityRegistryProducer();
+        
+        this.capabilityRegistryConsumer =
+                            this.configuration.getCapabilityRegistryConsumer();
+        
+        this.capabilityRegistryConsumer.setMessageHandler(this);
     }
     
     
@@ -84,5 +133,116 @@ public class AmqpCapabilityRegistryManager implements IAmqpCapabilityRegistryMes
         
         this.capabilityRegistryProducer.publishUnregisterDataProvider(
                 correlationId, identity);
+    }
+    
+    
+    /**
+     * This returns the service for the specified system.
+     *
+     * @param   timeout   The timeout in milliseconds.
+     * 
+     * @return  The response with the list of available data providers.
+     * 
+     * @throw   CapabilityRegistryException Thrown if the request fails.
+     * @throw   CapabilityRegistryException Thrown if the request times out.
+     * 
+     * @since   1.0
+     */
+    public ListDataProvidersResponse listDataProviders(final long timeout) 
+        throws CapabilityRegistryException, ServiceTimeoutException
+    {
+        if (this.isShutDown())
+        {
+            final String logMessage = LOGGER.error(HDCRMessageCode.MANAGER_SHUTDOWN_E.getMessageCode());
+            throw new CapabilityRegistryException(logMessage);
+        }
+
+        // create a correlation identifier for the operation
+        final String requestId = UUID.randomUUID().toString();
+
+        final ServiceCallback<ListDataProvidersResponse> callback = 
+                            new ServiceCallback<ListDataProvidersResponse>();
+
+        // the infinite timeout is used for the task because it is handled with     
+        // this synchronous call.
+        final ServiceTask<IServiceCallback<?>> task = 
+                new ServiceTask<IServiceCallback<?>>(requestId, callback, timeout);
+
+        // add the callback using the correlation identifier as key
+        this.addServiceTask(requestId, task);
+
+        final String replyTo = this.capabilityRegistryConsumer.getReplyTo();
+        
+        // publish the list system compliance message to the service
+        try
+        {
+            this.capabilityRegistryProducer.publishListDataProviders(requestId, replyTo);
+        }
+        catch (Exception exception)
+        {
+            // remove the callback if the message cannot be published
+            this.removeServiceTask(requestId);
+
+            Object[] logParams = {exception.getMessage()};
+            String logMessage = LOGGER.error(HDCRMessageCode.PUBLISH_MESSAGE_FAIL_E.getMessageCode(), logParams, exception);
+
+            throw new CapabilityRegistryException(logMessage, exception);
+        }
+
+        // wait from the response from the service
+        this.waitForServiceCallback(callback, requestId, timeout);
+
+        // check to see if a error has been handled by the manager
+        final ServiceError error = callback.getServiceError();
+
+        // throw a compute exception using the message in the error
+        if (error != null)
+        {
+            throw new CapabilityRegistryException(error.getErrorMessage());
+        }
+
+        // if there was no error, then return the response
+        return callback.getServiceResponse();
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void handleDataProvidersFound(final DataProvidersFoundMessage message,
+            final MessagePropertiesContainer messageProperties)
+    {
+        if (message == null)
+        {
+            return;
+        }
+
+        final String correlationId = messageProperties.getCorrelationId();
+
+        final IServiceCallback<?> callback = 
+                                    this.removeServiceCallback(correlationId);
+
+        if (callback == null)
+        {
+            return;
+        }
+
+        final List<DataProvider> dataProviders = message.getDataProviders();
+
+        final ListDataProvidersResponse response = 
+                    new ListDataProvidersResponse(correlationId, dataProviders);
+
+        // TODO : Take the callback processing off the message thread
+        try
+        {
+            ((ServiceCallback<ListDataProvidersResponse>) callback).handleServiceResponse(response);
+        }
+        catch (Exception exception)
+        {
+            // log the exception thrown by the compute callback
+            Object[] logParams = {"handleServiceResponse", exception.getMessage()};
+            LOGGER.error(HDCRMessageCode.ERROR_CALLBACK_FAIL_E.getMessageCode(), logParams, exception);
+        }
     }
 }

@@ -4,16 +4,23 @@
         "profile": {
             "type": "string"
         },
-        "type": {
+        "productFamily": {
             "type": "string"
         },
-        "family": {
+        "product": {
             "type": "string"
         },
-        "series": {
+        "modelFamily": {
             "type": "string"
-        }
+        },
+        "model": {
+            "type": "string"
+        },
+        "elementType": {
+            "type": "string"
+        }   
     },
     "required": [
+        "profile"
     ]
 }

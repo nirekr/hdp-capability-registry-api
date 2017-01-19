@@ -5,6 +5,10 @@
 
 package com.dell.cpsd.hdp.capability.registry.client.amqp.consumer;
 
+import com.dell.cpsd.hdp.capability.registry.api.DataProvidersFoundMessage;
+
+import com.dell.cpsd.common.rabbitmq.message.MessagePropertiesContainer;
+
 /**
  * This interface should be implemented by a class that handles the processing
  * of service response and error messages.
@@ -19,4 +23,14 @@ package com.dell.cpsd.hdp.capability.registry.client.amqp.consumer;
  */
 public interface IAmqpCapabilityRegistryMessageHandler
 {
+    /**
+     * This handles a <code>DataProvidersFoundMessage</code> message.
+     *
+     * @param   message             The message to process.
+     * @param   messageProperties   The message properties.
+     * 
+     * @since   1.0
+     */
+    public void handleDataProvidersFound(final DataProvidersFoundMessage message,
+            final MessagePropertiesContainer messageProperties);
 }

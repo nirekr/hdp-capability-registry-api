@@ -27,6 +27,10 @@ import com.dell.cpsd.hdp.capability.registry.client.ICapabilityRegistryManager;
 
 import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilityRegistryProducer;
 
+import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryConsumer;
+
+import com.dell.cpsd.hdp.capability.registry.client.CapabilityRegistryConfiguration;
+
 /**
  * The configuration for the capability registry manager.
  * <p>
@@ -39,7 +43,8 @@ import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilit
  * @since   SINCE-TBD
  */
 @Configuration
-@Import({CapabilityRegistryRabbitConfig.class, CapabilityRegistryProducerConfig.class})
+@Import({CapabilityRegistryRabbitConfig.class, CapabilityRegistryConsumerConfig.class, 
+            CapabilityRegistryProducerConfig.class})
 public class CapabilityRegistryManagerConfig
 {
     /*
@@ -54,6 +59,12 @@ public class CapabilityRegistryManagerConfig
     @Autowired
     private IAmqpCapabilityRegistryProducer capabilityRegistryProducer;
     
+    /*
+     * The capability registry producer.
+     */
+    @Autowired
+    private IAmqpCapabilityRegistryConsumer capabilityRegistryServiceConsumer;
+    
     
     /**
      * This returns the capability registry manager.
@@ -66,6 +77,9 @@ public class CapabilityRegistryManagerConfig
     @Qualifier("capabilityRegistryManager")
     ICapabilityRegistryManager capabilityRegistryManager()
     {
-        return new AmqpCapabilityRegistryManager(this.capabilityRegistryProducer);
+        final CapabilityRegistryConfiguration configuration = new CapabilityRegistryConfiguration(
+                capabilityRegistryServiceConsumer, capabilityRegistryProducer);
+        
+        return new AmqpCapabilityRegistryManager(configuration);
     }
 }

@@ -57,5 +57,20 @@ public interface IAmqpCapabilityRegistryProducer
     public void publishUnregisterDataProvider(final String correlationId,
             final ProviderIdentity identity)
         throws CapabilityRegistryException;
+    
+    
+    /**
+     * This publishes a message to get the list of HAL data providers.
+     *
+     * @param   correlationId   The message correlation identifier.
+     * @param   replyTo         The reply to destination
+     * 
+     * @throws  CapabilityRegistryException Thrown if the request fails to send.
+     * 
+     * @since   1.0
+     */
+    public void publishListDataProviders(final String correlationId,
+            final String replyTo)
+        throws CapabilityRegistryException;
 
 }

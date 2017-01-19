@@ -49,6 +49,8 @@ import java.util.Map;
 
 import com.dell.cpsd.hdp.capability.registry.api.RegisterDataProviderMessage;
 import com.dell.cpsd.hdp.capability.registry.api.UnregisterDataProviderMessage;
+import com.dell.cpsd.hdp.capability.registry.api.ListDataProvidersMessage;
+import com.dell.cpsd.hdp.capability.registry.api.DataProvidersFoundMessage;
 
 /**
  * This is the configuration for the RabbitMQ artifacts used by a client.
@@ -83,17 +85,38 @@ public class CapabilityRegistryRabbitConfig
     /**
      * The name of the capability profile registry request exchange
      */
-    public static final String EXCHANGE_HDP_CAPABILITY_REGISTRY_REQUEST = "exchange.dell.cpsd.hdp.capability.registry.request";
+    public static final String EXCHANGE_HDP_CAPABILITY_REGISTRY_REQUEST = 
+                         "exchange.dell.cpsd.hdp.capability.registry.request";
+    
+    /**
+     * The name of the capability profile registry request exchange
+     */
+    public static final String EXCHANGE_HDP_CAPABILITY_REGISTRY_RESPONSE = 
+                        "exchange.dell.cpsd.hdp.capability.registry.response";
+    
+    /*
+     * The binding key to the service message response queue.
+     */
+    private static final String BINDING_HDP_CAPABILITY_REGISTRY_RESPONSE = 
+                                 "dell.cpsd.hdp.capability.registry.response";
+
+    /*
+     * The fragment of the service message queue name.
+     */
+    private static final String QUEUE_HDP_CAPABILITY_REGISTRY_RESPONSE = 
+                           "queue.dell.cpsd.hdp.capability.registry.response";
     
     /**
      * The name of the capability profile registry heartbeat exchange
      */
-    public static final String EXCHANGE_HDP_CAPABILITY_REGISTRY_HEARTBEAT = "exchange.dell.cpsd.hdp.capability.registry.heartbeat";
+    public static final String EXCHANGE_HDP_CAPABILITY_REGISTRY_HEARTBEAT = 
+                       "exchange.dell.cpsd.hdp.capability.registry.heartbeat";
 
     /**
      * The name of the capability profile registry event exchange
      */
-    public static final String EXCHANGE_HDP_CAPABILITY_REGISTRY_EVENT = "exchange.dell.cpsd.hdp.capability.registry.event";
+    public static final String EXCHANGE_HDP_CAPABILITY_REGISTRY_EVENT = 
+                           "exchange.dell.cpsd.hdp.capability.registry.event";
     
     
     /*
@@ -214,6 +237,8 @@ public class CapabilityRegistryRabbitConfig
 
         messageClasses.add(RegisterDataProviderMessage.class);
         messageClasses.add(UnregisterDataProviderMessage.class);
+        messageClasses.add(ListDataProvidersMessage.class);
+        messageClasses.add(DataProvidersFoundMessage.class);
 
         final MessageAnnotationProcessor messageAnnotationProcessor = new MessageAnnotationProcessor();
 
@@ -266,6 +291,21 @@ public class CapabilityRegistryRabbitConfig
     {
         return new TopicExchange(EXCHANGE_HDP_CAPABILITY_REGISTRY_REQUEST);
     }
+    
+    
+    /**
+     * This returns the <code>TopicExchange</code> for the service response
+     * messages.
+     *
+     * @return  The <code>TopicExchange</code> for the service responses.
+     * 
+     * @since   1.0
+     */
+    @Bean
+    TopicExchange capabilityRegistryResponseExchange()
+    {
+        return new TopicExchange(EXCHANGE_HDP_CAPABILITY_REGISTRY_RESPONSE);
+    }
 
     
     /**
@@ -282,6 +322,68 @@ public class CapabilityRegistryRabbitConfig
         return new TopicExchange(EXCHANGE_HDP_CAPABILITY_REGISTRY_HEARTBEAT);
     }
     
+    
+    /**
+     * This returns the <code>Queue</code> for response messages from the
+     * service.
+     *
+     * @return  The <code>Queue</code> for service response messages.
+     * 
+     * @since   1.0
+     */
+    @Bean
+    Queue capabilityRegistryResponseQueue()
+    {
+        final String bindingPostFix = this.getResponseQueuePostfix();
+
+        final StringBuilder builder = new StringBuilder();
+
+        builder.append(QUEUE_HDP_CAPABILITY_REGISTRY_RESPONSE);
+        builder.append(".");
+        builder.append(bindingPostFix);
+
+        final String queueName = builder.toString();
+
+        Object[] lparams = {queueName};
+        LOGGER.info(HDCRMessageCode.SERVICE_RESPONSE_QUEUE_I.getMessageCode(), lparams);
+        
+        boolean stateful = this.consumerContextConfig.stateful();
+
+        final Queue queue = new Queue(queueName, true, false, !stateful);
+
+        return queue;
+    }
+
+    
+    /**
+     * This returns the <code>Binding</code> for the service response message
+     * queue and exchange.
+     *
+     * @return  The <code>Binding</code> for the service response message queue.
+     * 
+     * @since   1.0
+     */
+    @Bean
+    public Binding capabiltyRegistryResponseQueueBinding()
+    {
+        final String bindingPostFix = this.getResponseQueuePostfix();
+
+        final StringBuilder builder = new StringBuilder();
+
+        builder.append(BINDING_HDP_CAPABILITY_REGISTRY_RESPONSE);
+        builder.append(".");
+        builder.append(bindingPostFix);
+
+        final String binding = builder.toString();
+
+        Object[] lparams = {binding};
+        LOGGER.info(HDCRMessageCode.SERVICE_RESPONSE_BINDING_I.getMessageCode(), lparams);
+
+        return BindingBuilder.bind(capabilityRegistryResponseQueue()).
+                to(capabilityRegistryResponseExchange()).
+                with(binding);
+    }
+    
 
     /**
      * This returns the <code>AmqpAdmin</code> for the connection factory.
@@ -294,5 +396,19 @@ public class CapabilityRegistryRabbitConfig
     AmqpAdmin amqpAdmin()
     {
         return new RabbitAdmin(rabbitConnectionFactory);
+    }
+    
+    
+    /*
+     * This returns the generated postfix that is appended to the service
+     * response message queue and exchange binding.
+     * 
+     * @return  The generated postfix.
+     * 
+     * @since   1.0
+     */
+    private String getResponseQueuePostfix()
+    {
+        return this.consumerContextConfig.consumerUuid();
     }
 }

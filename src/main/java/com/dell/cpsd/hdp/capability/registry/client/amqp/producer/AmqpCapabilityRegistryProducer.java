@@ -27,6 +27,7 @@ import com.dell.cpsd.hdp.capability.registry.api.DataProvider;
 
 import com.dell.cpsd.hdp.capability.registry.api.RegisterDataProviderMessage;
 import com.dell.cpsd.hdp.capability.registry.api.UnregisterDataProviderMessage;
+import com.dell.cpsd.hdp.capability.registry.api.ListDataProvidersMessage;
 
 import com.dell.cpsd.common.rabbitmq.processor.PropertiesPostProcessor;
 
@@ -188,6 +189,48 @@ public class AmqpCapabilityRegistryProducer implements IAmqpCapabilityRegistryPr
         }
     }
     
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void publishListDataProviders(final String correlationId,
+            final String replyTo)
+        throws CapabilityRegistryException
+    {
+        final DefaultMessageProperties messageProperties = 
+                new DefaultMessageProperties(this.calendar.getTime(), correlationId, replyTo);   
+        
+        final ListDataProvidersMessage message = new ListDataProvidersMessage(
+                this.getHostname());
+
+        final PropertiesPostProcessor messagePostProcessor = 
+                                new PropertiesPostProcessor(messageProperties);
+        
+        if (LOGGER.isDebugEnabled())
+        {
+            StringBuilder builder = new StringBuilder();
+
+            builder.append(" publishListDataProviders : ");
+            builder.append("exchange [").append(exchange.getName());
+            builder.append("], message [").append(message).append("]");
+
+            LOGGER.debug(builder.toString());
+        }
+
+        try
+        {
+            rabbitTemplate.convertAndSend(exchange.getName(), 
+                ROUTING_HDP_CAPABILITY_REGISTRY_REQUEST, message, messagePostProcessor);
+        }
+        catch (Exception exception)
+        {
+            Object[] lparams = {message, exception.getMessage()};
+            String lmessage = LOGGER.error(HDCRMessageCode.PRODUCER_PUBLISH_E.getMessageCode(), lparams, exception);
+
+            throw new CapabilityRegistryException(lmessage, exception);
+        }
+    }
 
 
     /**

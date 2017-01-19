@@ -19,6 +19,17 @@ package com.dell.cpsd.hdp.capability.registry.client.amqp.consumer;
 public interface IAmqpCapabilityRegistryConsumer
 {
     /**
+     * This returns the reply to destination for the service message queue for
+     * this consumer.
+     *
+     * @return  The reply to destination for the service message queue.
+     * 
+     * @since   1.0
+     */
+    public String getReplyTo();
+    
+    
+    /**
      * This returns the <code>IAmqpCapabilityRegistryMessageHandler</code> for 
      * the consumer.
      *
