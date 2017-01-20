@@ -340,17 +340,17 @@ public class CapabilityRegistryRabbitConfig
     
     
     /**
-     * This returns the <code>TopicExchange</code> for the service control
+     * This returns the <code>FanoutExchange</code> for the service control
      * messages.
      *
-     * @return  The <code>TopicExchange</code> for control messages.
+     * @return  The <code>FanoutExchange</code> for control messages.
      * 
      * @since   1.0
      */
     @Bean
-    TopicExchange capabilityRegistryControlExchange()
+    FanoutExchange capabilityRegistryControlExchange()
     {
-        return new TopicExchange(EXCHANGE_HDP_CAPABILITY_REGISTRY_CONTROL);
+        return new FanoutExchange(EXCHANGE_HDP_CAPABILITY_REGISTRY_CONTROL);
     }
     
     
@@ -459,22 +459,8 @@ public class CapabilityRegistryRabbitConfig
     @Bean
     public Binding capabilityRegistryControlQueueBinding()
     {
-        final String bindingPostFix = this.getResponseQueuePostfix();
-
-        final StringBuilder builder = new StringBuilder();
-
-        builder.append(BINDING_HDP_CAPABILITY_REGISTRY_CONTROL);
-        builder.append(".");
-        builder.append(bindingPostFix);
-
-        final String binding = builder.toString();
-
-        Object[] lparams = {binding};
-        LOGGER.info(HDCRMessageCode.SERVICE_RESPONSE_BINDING_I.getMessageCode(), lparams);
-
         return BindingBuilder.bind(capabilityRegistryControlQueue()).
-                to(capabilityRegistryControlExchange()).
-                with(binding);
+                to(capabilityRegistryControlExchange());
     }
     
 

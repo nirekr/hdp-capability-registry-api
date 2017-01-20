@@ -12,7 +12,7 @@ import com.dell.cpsd.common.rabbitmq.consumer.UnhandledMessageConsumer;
 import com.dell.cpsd.hdp.capability.registry.client.log.HDCRLoggingManager;
 import com.dell.cpsd.hdp.capability.registry.client.log.HDCRMessageCode;
 
-import com.dell.cpsd.hdp.capability.registry.api.ProviderIdentity;
+import com.dell.cpsd.hdp.capability.registry.api.DataProvider;
 import com.dell.cpsd.hdp.capability.registry.api.PingDataProviderMessage;
 
 import com.dell.cpsd.common.rabbitmq.message.MessagePropertiesContainer;
@@ -47,9 +47,9 @@ public class AmqpCapabilityRegistryControlConsumer extends UnhandledMessageConsu
     private String replyTo = null;
     
     /*
-     * The HAL data provider identity
+     * The HAL data provider information
      */
-    private ProviderIdentity providerIdentity = null;
+    private DataProvider dataProvider = null;
     
     /*
      * The capability registry control producer
@@ -103,14 +103,14 @@ public class AmqpCapabilityRegistryControlConsumer extends UnhandledMessageConsu
      * {@inheritDoc}
      */
     @Override
-    public void setProviderIdentity(final ProviderIdentity providerIdentity)
+    public void setDataProvider(final DataProvider dataProvider)
     {
-        if (providerIdentity == null)
+        if (dataProvider == null)
         {
-            throw new IllegalArgumentException("The provider identity is null");
+            throw new IllegalArgumentException("The data provider is null");
         }
         
-        this.providerIdentity = providerIdentity;
+        this.dataProvider = dataProvider;
     }
 
     
@@ -144,7 +144,7 @@ public class AmqpCapabilityRegistryControlConsumer extends UnhandledMessageConsu
         try
         {
             this.capabilityRegistryControlProducer.publishDataProviderPong(
-                correlationId, replyTo, this.providerIdentity);
+                correlationId, replyTo, this.dataProvider);
             
         } catch (CapabilityRegistryException exception)
         {

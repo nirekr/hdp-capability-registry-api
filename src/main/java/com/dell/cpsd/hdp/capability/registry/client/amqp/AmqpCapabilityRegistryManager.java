@@ -119,14 +119,16 @@ public class AmqpCapabilityRegistryManager extends AbstractServiceCallbackManage
         // set the provider identity on the control consumer
         final IAmqpCapabilityRegistryControlConsumer capabilityRegistryControlConsumer =
                 this.configuration.getCapabilityRegistryControlConsumer();
-                
+        
+        final DataProvider dataProvider = new DataProvider(identity, capabilities);
+        
         // the control consumer is expected to be in the configuration
-        capabilityRegistryControlConsumer.setProviderIdentity(identity);
+        capabilityRegistryControlConsumer.setDataProvider(dataProvider);
         
         final String correlationId = UUID.randomUUID().toString();
         
         this.capabilityRegistryServiceProducer.publishRegisterDataProvider(
-                correlationId, identity, capabilities);
+                correlationId, dataProvider);
     }
     
     

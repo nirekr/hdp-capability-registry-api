@@ -11,7 +11,7 @@ import java.util.List;
 import com.dell.cpsd.hdp.capability.registry.client.CapabilityRegistryException;
 
 import com.dell.cpsd.hdp.capability.registry.api.ProviderIdentity;
-import com.dell.cpsd.hdp.capability.registry.api.ProviderCapability;
+import com.dell.cpsd.hdp.capability.registry.api.DataProvider;
 
 /**
  * This interface should be implemented by a producer of service request
@@ -31,16 +31,14 @@ public interface IAmqpCapabilityRegistryServiceProducer
      * This publishes a message to register a HAL data provider.
      *
      * @param   correlationId   The message correlation identifier.
-     * @param   identity        The HAL data provider identity.
-     * @param   capabilities    The list of capabilities to register.
+     * @param   dataProvider    The HAL data provider information.
      * 
      * @throws  CapabilityRegistryException Thrown if the registration fails.
      * 
      * @since   1.0
      */
     public void publishRegisterDataProvider(final String correlationId,
-            final ProviderIdentity identity, 
-            final List<ProviderCapability> capabilities)
+            final DataProvider dataProvider)
         throws CapabilityRegistryException;
 
     

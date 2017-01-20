@@ -21,7 +21,7 @@ import org.springframework.amqp.core.Exchange;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
-import com.dell.cpsd.hdp.capability.registry.api.ProviderIdentity;
+import com.dell.cpsd.hdp.capability.registry.api.DataProvider;
 
 import com.dell.cpsd.hdp.capability.registry.api.DataProviderPongMessage;
 
@@ -100,14 +100,14 @@ public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityReg
      */
     @Override
     public void publishDataProviderPong(final String correlationId,
-            final String replyTo, final ProviderIdentity identity)
+            final String replyTo, final DataProvider dataProvider)
         throws CapabilityRegistryException
     {
         final DefaultMessageProperties messageProperties = 
                 new DefaultMessageProperties(this.calendar.getTime(), correlationId);
         
         final DataProviderPongMessage message = new DataProviderPongMessage(
-                this.getHostname(), identity);
+                this.getHostname(), dataProvider);
 
         final PropertiesPostProcessor messagePostProcessor = 
                                 new PropertiesPostProcessor(messageProperties);

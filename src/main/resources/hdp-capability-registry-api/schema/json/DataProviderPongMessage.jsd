@@ -11,11 +11,11 @@
     "hostname": {
       "type": "string"
     },
-    "providerIdentity": {
-      "$ref": "ProviderIdentity.jsd"
+    "dataProvider": {
+      "$ref": "DataProvider.jsd"
     }
   },
   "required": [
-    "providerIdentity"
+    "dataProvider"
   ]
 }

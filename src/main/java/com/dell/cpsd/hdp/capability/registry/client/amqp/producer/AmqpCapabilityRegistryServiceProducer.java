@@ -109,15 +109,12 @@ public class AmqpCapabilityRegistryServiceProducer implements IAmqpCapabilityReg
      */
     @Override
     public void publishRegisterDataProvider(final String correlationId,
-            final ProviderIdentity identity, 
-            final List<ProviderCapability> capabilities)
+            final DataProvider dataProvider)
         throws CapabilityRegistryException
     {
         final DefaultMessageProperties messageProperties = 
                 new DefaultMessageProperties(this.calendar.getTime(), correlationId);
-        
-        final DataProvider dataProvider = new DataProvider(identity, capabilities);
-        
+       
         final RegisterDataProviderMessage message = new RegisterDataProviderMessage(
                 this.getHostname(), dataProvider);
 

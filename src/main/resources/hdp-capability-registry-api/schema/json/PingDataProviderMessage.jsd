@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "title": "PingDataProviderMessage",
-  "description": "The HAL data provider pong message.",
+  "description": "The HAL data provider ping message.",
   "_meta": {
     "message": "com.dell.cpsd.hdp.data.provider.ping",
     "version": "1.0"

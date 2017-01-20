@@ -5,7 +5,7 @@
 
 package com.dell.cpsd.hdp.capability.registry.client.amqp.consumer;
 
-import com.dell.cpsd.hdp.capability.registry.api.ProviderIdentity;
+import com.dell.cpsd.hdp.capability.registry.api.DataProvider;
 
 /**
  * This interface should be implemented by a consumer of service control messages.
@@ -32,11 +32,11 @@ public interface IAmqpCapabilityRegistryControlConsumer
     
     
     /**
-     * This sets the HAL data provider identity.
+     * This sets the HAL data provider information.
      * 
-     * @param   identity    The HAL data provider identity.
+     * @param   dataProvider    The HAL data provider information.
      * 
      * @since   1.0
      */
-    public void setProviderIdentity(final ProviderIdentity providerIdentity);
+    public void setDataProvider(final DataProvider dataProvider);
 }
