@@ -27,12 +27,14 @@ import com.dell.cpsd.common.rabbitmq.message.MessagePropertiesContainer;
  * 
  * @since   SINCE-TBD
  */
-public class AmqpCapabilityRegistryConsumer extends UnhandledMessageConsumer implements IAmqpCapabilityRegistryConsumer
+public class AmqpCapabilityRegistryServiceConsumer extends UnhandledMessageConsumer 
+                            implements IAmqpCapabilityRegistryServiceConsumer
 {
     /*
      * The logger for this class.
      */
-    private static final ILogger LOGGER = HDCRLoggingManager.getLogger(AmqpCapabilityRegistryConsumer.class);
+    private static final ILogger LOGGER = 
+            HDCRLoggingManager.getLogger(AmqpCapabilityRegistryServiceConsumer.class);
 
     /*
      * The <code>IAmqpCapabilityRegistryMessageHandler</code> that handles messages.
@@ -46,13 +48,13 @@ public class AmqpCapabilityRegistryConsumer extends UnhandledMessageConsumer imp
 
     
     /**
-     * AmqpCapabilityRegistryConsumer constructor
+     * AmqpCapabilityRegistryServiceConsumer constructor
      * 
      * @param   replyTo The reply to destination
      *
      * @since   1.0
      */
-    public AmqpCapabilityRegistryConsumer(final String replyTo)
+    public AmqpCapabilityRegistryServiceConsumer(final String replyTo)
     {
         super();
 

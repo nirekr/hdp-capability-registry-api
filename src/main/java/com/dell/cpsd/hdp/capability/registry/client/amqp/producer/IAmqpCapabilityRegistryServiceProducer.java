@@ -25,7 +25,7 @@ import com.dell.cpsd.hdp.capability.registry.api.ProviderCapability;
  * 
  * @since   SINCE-TBD
  */
-public interface IAmqpCapabilityRegistryProducer
+public interface IAmqpCapabilityRegistryServiceProducer
 {
     /**
      * This publishes a message to register a HAL data provider.

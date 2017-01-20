@@ -25,9 +25,10 @@ import com.dell.cpsd.hdp.capability.registry.client.amqp.AmqpCapabilityRegistryM
 
 import com.dell.cpsd.hdp.capability.registry.client.ICapabilityRegistryManager;
 
-import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilityRegistryProducer;
+import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilityRegistryServiceProducer;
 
-import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryConsumer;
+import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryServiceConsumer;
+import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryControlConsumer;
 
 import com.dell.cpsd.hdp.capability.registry.client.CapabilityRegistryConfiguration;
 
@@ -43,8 +44,8 @@ import com.dell.cpsd.hdp.capability.registry.client.CapabilityRegistryConfigurat
  * @since   SINCE-TBD
  */
 @Configuration
-@Import({CapabilityRegistryRabbitConfig.class, CapabilityRegistryConsumerConfig.class, 
-            CapabilityRegistryProducerConfig.class})
+@Import({CapabilityRegistryRabbitConfig.class, CapabilityRegistryProducerConfig.class, 
+            CapabilityRegistryConsumerConfig.class})
 public class CapabilityRegistryManagerConfig
 {
     /*
@@ -57,13 +58,20 @@ public class CapabilityRegistryManagerConfig
      * The capability registry producer.
      */
     @Autowired
-    private IAmqpCapabilityRegistryProducer capabilityRegistryProducer;
+    private IAmqpCapabilityRegistryServiceProducer capabilityRegistryServiceProducer;
     
     /*
-     * The capability registry producer.
+     * The capability registry service consumer.
      */
     @Autowired
-    private IAmqpCapabilityRegistryConsumer capabilityRegistryServiceConsumer;
+    private IAmqpCapabilityRegistryServiceConsumer capabilityRegistryServiceConsumer;
+    
+    
+    /*
+     * The capability registry control consumer.
+     */
+    @Autowired
+    private IAmqpCapabilityRegistryControlConsumer capabilityRegistryControlConsumer;
     
     
     /**
@@ -78,7 +86,8 @@ public class CapabilityRegistryManagerConfig
     ICapabilityRegistryManager capabilityRegistryManager()
     {
         final CapabilityRegistryConfiguration configuration = new CapabilityRegistryConfiguration(
-                capabilityRegistryServiceConsumer, capabilityRegistryProducer);
+                capabilityRegistryServiceConsumer, capabilityRegistryServiceProducer,
+                capabilityRegistryControlConsumer);
         
         return new AmqpCapabilityRegistryManager(configuration);
     }

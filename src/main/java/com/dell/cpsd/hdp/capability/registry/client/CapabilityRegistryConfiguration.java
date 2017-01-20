@@ -11,9 +11,10 @@ import com.dell.cpsd.hdp.capability.registry.client.amqp.config.CapabilityRegist
 import com.dell.cpsd.hdp.capability.registry.client.amqp.config.CapabilityRegistryConsumerConfig;
 import com.dell.cpsd.hdp.capability.registry.client.amqp.config.CapabilityRegistryProducerConfig;
 
-import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryConsumer;
+import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryServiceConsumer;
+import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryControlConsumer;
 
-import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilityRegistryProducer;
+import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilityRegistryServiceProducer;
 
 /**
  * This is the configuration for the service client.
@@ -29,35 +30,43 @@ import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilit
 public class CapabilityRegistryConfiguration implements ICapabilityRegistryConfiguration
 {
     /*
-     * The <code>IAmqpCapabilityRegistryConsumer</code> to use.
+     * The <code>IAmqpCapabilityRegistryServiceConsumer</code> to use.
      */
-    private IAmqpCapabilityRegistryConsumer capabilityRegistryConsumer = null;
-    
+    private IAmqpCapabilityRegistryServiceConsumer capabilityRegistryServiceConsumer = null;
     
     /*
-     * The <code>IAmqpCapabilityRegistryProducer</code> to use.
+     * The <code>IAmqpCapabilityRegistryServiceProducer</code> to use.
      */
-    private IAmqpCapabilityRegistryProducer capabilityRegistryProducer = null;
+    private IAmqpCapabilityRegistryServiceProducer capabilityRegistryServiceProducer = null;
+    
+    /*
+     * The <code>IAmqpCapabilityRegistryControlConsumer</code> to use.
+     */
+    private IAmqpCapabilityRegistryControlConsumer capabilityRegistryControlConsumer = null;
 
     
     /**
      * CapabilityRegistryConfiguration constructor.
      * 
-     * @param   capabilityRegistryConsumer   The capability registry consumer.
-     * @param   capabilityRegistryProducer   The capability registry producer.
+     * @param   capabilityRegistryServiceConsumer   The capability registry service consumer.
+     * @param   capabilityRegistryServiceProducer   The capability registry service producer.
+     * @param   capabilityRegistryControlConsumer   The capability registry control consumer.
      * 
      * @throws  IllegalArgumentException    Thrown if the arguments are null.
      * 
      * @since   1.0
      */
     public CapabilityRegistryConfiguration(
-            final IAmqpCapabilityRegistryConsumer capabilityRegistryConsumer,
-            final IAmqpCapabilityRegistryProducer capabilityRegistryProducer)
+            final IAmqpCapabilityRegistryServiceConsumer capabilityRegistryServiceConsumer,
+            final IAmqpCapabilityRegistryServiceProducer capabilityRegistryServiceProducer,
+            final IAmqpCapabilityRegistryControlConsumer capabilityRegistryControlConsumer)
     {
         super();
         
-        this.setCapabilityRegistryConsumer(capabilityRegistryConsumer);
-        this.setCapabilityRegistryProducer(capabilityRegistryProducer);
+        this.setCapabilityRegistryServiceConsumer(capabilityRegistryServiceConsumer);
+        this.setCapabilityRegistryServiceProducer(capabilityRegistryServiceProducer);
+        
+        this.setCapabilityRegistryControlConsumer(capabilityRegistryControlConsumer);
     }
 
     
@@ -65,32 +74,32 @@ public class CapabilityRegistryConfiguration implements ICapabilityRegistryConfi
      * {@inheritDoc}
      */
     @Override
-    public IAmqpCapabilityRegistryConsumer getCapabilityRegistryConsumer()
+    public IAmqpCapabilityRegistryServiceConsumer getCapabilityRegistryServiceConsumer()
     {
-        return this.capabilityRegistryConsumer;
+        return this.capabilityRegistryServiceConsumer;
     }
     
     
     /**
-     * This sets the <code>IAmqpCapabilityRegistryConsumer</code> implementation
-     * to use.
+     * This sets the <code>IAmqpCapabilityRegistryServiceConsumer</code> 
+     * implementation to use.
      * 
-     * @param   capabilityRegistryConsumer  The capability registry consumer.
+     * @param   capabilityRegistryServiceConsumer   The capability registry consumer.
      * 
      * @thrown  IllegalArgumentException    Thrown if the consumer is null.
      * 
      * @since   1.0
      */
-    protected void setCapabilityRegistryConsumer(
-              final IAmqpCapabilityRegistryConsumer capabilityRegistryConsumer)
+    protected void setCapabilityRegistryServiceConsumer(
+            final IAmqpCapabilityRegistryServiceConsumer capabilityRegistryServiceConsumer)
     {
-        if (capabilityRegistryConsumer == null)
+        if (capabilityRegistryServiceConsumer == null)
         {
             throw new IllegalArgumentException(
                                     "The capability registry consumer is null");
         }
         
-        this.capabilityRegistryConsumer = capabilityRegistryConsumer;
+        this.capabilityRegistryServiceConsumer = capabilityRegistryServiceConsumer;
     }
     
     
@@ -98,31 +107,64 @@ public class CapabilityRegistryConfiguration implements ICapabilityRegistryConfi
      * {@inheritDoc}
      */
     @Override
-    public IAmqpCapabilityRegistryProducer getCapabilityRegistryProducer()
+    public IAmqpCapabilityRegistryServiceProducer getCapabilityRegistryServiceProducer()
     {
-        return this.capabilityRegistryProducer;
+        return this.capabilityRegistryServiceProducer;
     }
     
     
     /**
-     * This sets the <code>IAmqpCapabilityRegistryProducer</code> implementation
-     * to use.
+     * This sets the <code>IAmqpCapabilityRegistryServiceProducer</code> 
+     * implementation to use.
      * 
-     * @param   capabilityRegistryProducer  The capability registry producer.
+     * @param   capabilityRegistryServiceProducer   The capability registry producer.
      * 
      * @thrown  IllegalArgumentException    Thrown if the producer is null.
      * 
      * @since   1.0
      */
-    protected void setCapabilityRegistryProducer(
-            final IAmqpCapabilityRegistryProducer capabilityRegistryProducer)
+    protected void setCapabilityRegistryServiceProducer(
+            final IAmqpCapabilityRegistryServiceProducer capabilityRegistryServiceProducer)
     {
-        if (capabilityRegistryProducer == null)
+        if (capabilityRegistryServiceProducer == null)
         {
             throw new IllegalArgumentException(
-                                    "The capability registry producer is null");
+                            "The capability registry service producer is null");
         }
         
-        this.capabilityRegistryProducer = capabilityRegistryProducer;
+        this.capabilityRegistryServiceProducer = capabilityRegistryServiceProducer;
+    }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IAmqpCapabilityRegistryControlConsumer getCapabilityRegistryControlConsumer()
+    {
+        return this.capabilityRegistryControlConsumer;
+    }
+    
+    
+    /**
+     * This sets the <code>IAmqpCapabilityRegistryControlConsumer</code> 
+     * implementation to use.
+     * 
+     * @param   capabilityRegistryControlConsumer   The capability registry control consumer.
+     * 
+     * @thrown  IllegalArgumentException    Thrown if the producer is null.
+     * 
+     * @since   1.0
+     */
+    protected void setCapabilityRegistryControlConsumer(
+            final IAmqpCapabilityRegistryControlConsumer capabilityRegistryControlConsumer)
+    {
+        if (capabilityRegistryControlConsumer == null)
+        {
+            throw new IllegalArgumentException(
+                            "The capability registry constrol consumer is null");
+        }
+        
+        this.capabilityRegistryControlConsumer = capabilityRegistryControlConsumer;
     }
 }

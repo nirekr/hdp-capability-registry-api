@@ -7,8 +7,11 @@ package com.dell.cpsd.hdp.capability.registry.client.amqp.config;
 
 import com.dell.cpsd.common.logging.ILogger;
 
-import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.AmqpCapabilityRegistryProducer;
-import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilityRegistryProducer;
+import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.AmqpCapabilityRegistryServiceProducer;
+import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilityRegistryServiceProducer;
+
+import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.AmqpCapabilityRegistryControlProducer;
+import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilityRegistryControlProducer;
 
 import com.dell.cpsd.hdp.capability.registry.client.log.HDCRLoggingManager;
 import com.dell.cpsd.hdp.capability.registry.client.log.HDCRMessageCode;
@@ -63,9 +66,16 @@ public class CapabilityRegistryProducerConfig
     @Qualifier("capabilityRegistryRequestExchange")
     private Exchange capabilityRegistryRequestExchange;
     
+    /*
+     * The service request exchange.
+     */
+    @Autowired
+    @Qualifier("capabilityRegistryHeartbeatExchange")
+    private Exchange capabilityRegistryHeartbeatExchange;
+    
 
     /**
-     * This returns the service message producer that publishes to the
+     * This returns the service message producer that publishes to the request
      * exchange.
      *
      * @return  The service message producer.
@@ -73,9 +83,26 @@ public class CapabilityRegistryProducerConfig
      * @since   1.0
      */
     @Bean
-    IAmqpCapabilityRegistryProducer capabilityRegistryProducer()
+    IAmqpCapabilityRegistryServiceProducer capabilityRegistryServiceProducer()
     {
-        return new AmqpCapabilityRegistryProducer(
+        return new AmqpCapabilityRegistryServiceProducer(
                 capabilityRegistryRabbitTemplate, capabilityRegistryRequestExchange, hostname);
     }
+    
+    
+    /**
+     * This returns the service message producer that publishes to the control
+     * exchange.
+     *
+     * @return  The service control message producer
+     * 
+     * @since   1.0
+     */
+    @Bean
+    IAmqpCapabilityRegistryControlProducer capabilityRegistryControlProducer()
+    {
+        return new AmqpCapabilityRegistryControlProducer(
+                capabilityRegistryRabbitTemplate, capabilityRegistryHeartbeatExchange, hostname);
+    }
+    
 }

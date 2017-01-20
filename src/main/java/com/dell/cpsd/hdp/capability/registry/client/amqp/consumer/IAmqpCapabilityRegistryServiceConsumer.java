@@ -16,7 +16,7 @@ package com.dell.cpsd.hdp.capability.registry.client.amqp.consumer;
  * 
  * @since SINCE-TBD
  */
-public interface IAmqpCapabilityRegistryConsumer
+public interface IAmqpCapabilityRegistryServiceConsumer
 {
     /**
      * This returns the reply to destination for the service message queue for

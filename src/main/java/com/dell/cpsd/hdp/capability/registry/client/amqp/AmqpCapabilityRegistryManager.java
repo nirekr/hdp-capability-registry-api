@@ -18,10 +18,11 @@ import com.dell.cpsd.hdp.capability.registry.api.ProviderIdentity;
 import com.dell.cpsd.hdp.capability.registry.api.DataProvider;
 import com.dell.cpsd.hdp.capability.registry.api.DataProvidersFoundMessage;
 
-import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilityRegistryProducer;
+import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilityRegistryServiceProducer;
 
-import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryConsumer;
+import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryServiceConsumer;
 import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryMessageHandler;
+import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryControlConsumer;
 
 import com.dell.cpsd.hdp.capability.registry.client.CapabilityRegistryException;
 import com.dell.cpsd.hdp.capability.registry.client.ICapabilityRegistryManager;
@@ -70,13 +71,13 @@ public class AmqpCapabilityRegistryManager extends AbstractServiceCallbackManage
     /*
      * The capability registry message producer.
      */
-    private IAmqpCapabilityRegistryProducer  capabilityRegistryProducer = null;
+    private IAmqpCapabilityRegistryServiceProducer  capabilityRegistryServiceProducer = null;
     
     /*
-     * The capability registry message consumer.
+     * The capability registry service consumer.
      */
-    private IAmqpCapabilityRegistryConsumer  capabilityRegistryConsumer = null;
-    
+    private IAmqpCapabilityRegistryServiceConsumer  capabilityRegistryServiceConsumer = null;
+
     
     /**
      * AmqpCapabilityRegistryManager constructor.
@@ -97,13 +98,13 @@ public class AmqpCapabilityRegistryManager extends AbstractServiceCallbackManage
         
         this.configuration = configuration;
        
-        this.capabilityRegistryProducer = 
-                            this.configuration.getCapabilityRegistryProducer();
+        this.capabilityRegistryServiceProducer = 
+                     this.configuration.getCapabilityRegistryServiceProducer();
         
-        this.capabilityRegistryConsumer =
-                            this.configuration.getCapabilityRegistryConsumer();
+        this.capabilityRegistryServiceConsumer =
+                     this.configuration.getCapabilityRegistryServiceConsumer();
         
-        this.capabilityRegistryConsumer.setMessageHandler(this);
+        this.capabilityRegistryServiceConsumer.setMessageHandler(this);
     }
     
     
@@ -115,9 +116,16 @@ public class AmqpCapabilityRegistryManager extends AbstractServiceCallbackManage
                         final List<ProviderCapability> capabilities)
         throws CapabilityRegistryException
     {
+        // set the provider identity on the control consumer
+        final IAmqpCapabilityRegistryControlConsumer capabilityRegistryControlConsumer =
+                this.configuration.getCapabilityRegistryControlConsumer();
+                
+        // the control consumer is expected to be in the configuration
+        capabilityRegistryControlConsumer.setProviderIdentity(identity);
+        
         final String correlationId = UUID.randomUUID().toString();
         
-        this.capabilityRegistryProducer.publishRegisterDataProvider(
+        this.capabilityRegistryServiceProducer.publishRegisterDataProvider(
                 correlationId, identity, capabilities);
     }
     
@@ -131,7 +139,7 @@ public class AmqpCapabilityRegistryManager extends AbstractServiceCallbackManage
     {
         final String correlationId = UUID.randomUUID().toString();
         
-        this.capabilityRegistryProducer.publishUnregisterDataProvider(
+        this.capabilityRegistryServiceProducer.publishUnregisterDataProvider(
                 correlationId, identity);
     }
     
@@ -171,12 +179,12 @@ public class AmqpCapabilityRegistryManager extends AbstractServiceCallbackManage
         // add the callback using the correlation identifier as key
         this.addServiceTask(requestId, task);
 
-        final String replyTo = this.capabilityRegistryConsumer.getReplyTo();
+        final String replyTo = this.capabilityRegistryServiceConsumer.getReplyTo();
         
         // publish the list system compliance message to the service
         try
         {
-            this.capabilityRegistryProducer.publishListDataProviders(requestId, replyTo);
+            this.capabilityRegistryServiceProducer.publishListDataProviders(requestId, replyTo);
         }
         catch (Exception exception)
         {

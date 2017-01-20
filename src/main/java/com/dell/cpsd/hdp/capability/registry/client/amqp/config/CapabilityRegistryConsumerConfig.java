@@ -41,8 +41,13 @@ import org.springframework.util.ErrorHandler;
 
 import com.dell.cpsd.common.rabbitmq.consumer.handler.DefaultMessageListenerAdapter;
 
-import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.AmqpCapabilityRegistryConsumer;
-import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryConsumer;
+import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryControlConsumer;
+import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.AmqpCapabilityRegistryControlConsumer;
+
+import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.AmqpCapabilityRegistryServiceConsumer;
+import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryServiceConsumer;
+
+import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilityRegistryControlProducer;
 
 /**
  * The configuration for the message consumers.
@@ -87,6 +92,24 @@ public class CapabilityRegistryConsumerConfig
     @Autowired
     private Binding capabilityRegistryResponseQueueBinding;
 
+    /*
+     * The queue for the service control messages.
+     */
+    @Autowired
+    private Queue capabilityRegistryControlQueue;
+
+    /*
+     * The message queue binding for the service control messages.
+     */
+    @Autowired
+    private Binding capabilityRegistryControlQueueBinding;
+    
+    /*
+     * The message capability registry control producer
+     */
+    @Autowired
+    private IAmqpCapabilityRegistryControlProducer capabilityRegistryControlProducer;
+    
 
     /**
      * The service response message listener container.
@@ -109,7 +132,7 @@ public class CapabilityRegistryConsumerConfig
                         capabilityRegistryMessageConverter);
         
         container.setMessageListener(messageListenerAdapter);
-        container.setErrorHandler(errorHandler("capabilityRegistryListenerContainer"));
+        container.setErrorHandler(errorHandler("capabilityRegistryServiceListenerContainer"));
 
         return container;
     }
@@ -119,15 +142,61 @@ public class CapabilityRegistryConsumerConfig
      * The message consumer for the service responses.
      *
      * @return  The message consumer for the service responses.
+     * 
      * @since   1.0
      */
     @Bean
-    IAmqpCapabilityRegistryConsumer capabilityRegistryServiceConsumer()
+    IAmqpCapabilityRegistryServiceConsumer capabilityRegistryServiceConsumer()
     {
         final String replyTo = 
                     this.capabilityRegistryResponseQueueBinding.getRoutingKey();
 
-        return new AmqpCapabilityRegistryConsumer(replyTo);
+        return new AmqpCapabilityRegistryServiceConsumer(replyTo);
+    }
+    
+    
+    /**
+     * The service control message listener container.
+     *
+     * @return  The service response message listener container.
+     * 
+     * @since   1.0
+     */
+    @Bean
+    SimpleMessageListenerContainer capabilityRegistryControlListenerContainer()
+    {
+        final SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+        container.setConnectionFactory(rabbitConnectionFactory);
+        container.setAcknowledgeMode(AcknowledgeMode.AUTO);
+        container.setQueues(capabilityRegistryControlQueue);
+        container.setAdviceChain(new Advice[] {retryPolicy()});
+        
+        final DefaultMessageListenerAdapter messageListenerAdapter = 
+                new DefaultMessageListenerAdapter(capabilityRegistryControlConsumer(), 
+                        capabilityRegistryMessageConverter);
+        
+        container.setMessageListener(messageListenerAdapter);
+        container.setErrorHandler(errorHandler("capabilityRegistryControlListenerContainer"));
+
+        return container;
+    }
+    
+
+    /**
+     * The message consumer for the service control messages.
+     *
+     * @return  The message consumer for the service responses.
+     * 
+     * @since   1.0
+     */
+    @Bean
+    IAmqpCapabilityRegistryControlConsumer capabilityRegistryControlConsumer()
+    {
+        final String replyTo = 
+                this.capabilityRegistryControlQueueBinding.getRoutingKey();
+        
+        return new AmqpCapabilityRegistryControlConsumer(replyTo,
+                                this.capabilityRegistryControlProducer);
     }
     
 

@@ -44,12 +44,13 @@ import com.dell.cpsd.common.rabbitmq.message.DefaultMessageProperties;
  * 
  * @since   SINCE-TBD
  */
-public class AmqpCapabilityRegistryProducer implements IAmqpCapabilityRegistryProducer
+public class AmqpCapabilityRegistryServiceProducer implements IAmqpCapabilityRegistryServiceProducer
 {
     /*
      * The logger for this class.
      */
-    private static final ILogger LOGGER = HDCRLoggingManager.getLogger(AmqpCapabilityRegistryProducer.class);
+    private static final ILogger LOGGER = 
+            HDCRLoggingManager.getLogger(AmqpCapabilityRegistryServiceProducer.class);
     
     /*
      * The routing for the capability profile registry message queue
@@ -78,7 +79,7 @@ public class AmqpCapabilityRegistryProducer implements IAmqpCapabilityRegistryPr
 
     
     /**
-     * AmqpCapabilityRegistryProducer constructor.
+     * AmqpCapabilityRegistryServiceProducer constructor.
      *
      * @param   rabbitTemplate  The RabbitMQ template.
      * @param   exchange        The service request exchange.
@@ -88,7 +89,7 @@ public class AmqpCapabilityRegistryProducer implements IAmqpCapabilityRegistryPr
      * 
      * @since   1.0
      */
-    public AmqpCapabilityRegistryProducer(final RabbitTemplate rabbitTemplate, 
+    public AmqpCapabilityRegistryServiceProducer(final RabbitTemplate rabbitTemplate, 
             final Exchange exchange, final String hostname)
     {
         super();

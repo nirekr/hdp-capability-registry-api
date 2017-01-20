@@ -5,9 +5,10 @@
 
 package com.dell.cpsd.hdp.capability.registry.client;
 
-import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryConsumer;
+import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryServiceConsumer;
+import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryControlConsumer;
 
-import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilityRegistryProducer;
+import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilityRegistryServiceProducer;
 
 /**
  * This is the configuration for the service client.
@@ -23,23 +24,34 @@ import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilit
 public interface ICapabilityRegistryConfiguration 
 {
     /**
-     * This returns the <code>IAmqpCapabilityRegistryConsumer</code> for the 
+     * This returns the <code>IAmqpCapabilityRegistryServiceConsumer</code> for the 
      * manager.
      * 
-     * @return  The <code>IAmqpCapabilityRegistryConsumer</code> that is used.
+     * @return  The <code>IAmqpCapabilityRegistryServiceConsumer</code> that is used.
      * 
      * @since   1.0
      */
-    public IAmqpCapabilityRegistryConsumer getCapabilityRegistryConsumer();
+    public IAmqpCapabilityRegistryServiceConsumer getCapabilityRegistryServiceConsumer();
     
     
     /**
-     * This returns the <code>IAmqpCapabilityRegistryProducer</code> for the 
-     * manager.
+     * This returns the <code>IAmqpCapabilityRegistryServiceProducer</code> for 
+     * the manager.
      * 
-     * @return  The <code>IAmqpCapabilityRegistryProducer</code> that is used.
+     * @return  The <code>IAmqpCapabilityRegistryServiceProducer</code> that is used.
      * 
      * @since   1.0
      */
-    public IAmqpCapabilityRegistryProducer getCapabilityRegistryProducer();
+    public IAmqpCapabilityRegistryServiceProducer getCapabilityRegistryServiceProducer();
+    
+    
+    /**
+     * This returns the <code>IAmqpCapabilityRegistryControlConsumer</code> for 
+     * the manager.
+     * 
+     * @return  The <code>IAmqpCapabilityRegistryControlConsumer</code> that is used.
+     * 
+     * @since   1.0
+     */
+    public IAmqpCapabilityRegistryControlConsumer getCapabilityRegistryControlConsumer();
 }

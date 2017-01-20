@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "DataProviderPongMessage",
+  "description": "The HAL data provider pong message.",
+  "_meta": {
+    "message": "com.dell.cpsd.hdp.data.provider.pong",
+    "version": "1.0"
+  },
+  "properties": {
+    "hostname": {
+      "type": "string"
+    },
+    "providerIdentity": {
+      "$ref": "ProviderIdentity.jsd"
+    }
+  },
+  "required": [
+    "providerIdentity"
+  ]
+}
