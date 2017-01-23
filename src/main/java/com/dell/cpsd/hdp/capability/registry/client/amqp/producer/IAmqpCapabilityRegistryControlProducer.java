@@ -58,11 +58,10 @@ public interface IAmqpCapabilityRegistryControlProducer
     
     
     /**
-     * This publishes a pong message to the capability registry heartbeat 
+     * This publishes a pong message to the capability registry registration 
      * exchange.
      *
      * @param   correlationId   The message correlation identifier.
-     * @param   replyTo         The reply to destination.
      * @param   dataProvider    The HAL data provider information.
      * 
      * @throws  CapabilityRegistryException Thrown if it fails to send.
@@ -70,7 +69,7 @@ public interface IAmqpCapabilityRegistryControlProducer
      * @since   1.0
      */
     public void publishDataProviderPong(final String correlationId,
-            final String replyTo, final DataProvider dataProvider)
+            final DataProvider dataProvider)
         throws CapabilityRegistryException;
 
 }

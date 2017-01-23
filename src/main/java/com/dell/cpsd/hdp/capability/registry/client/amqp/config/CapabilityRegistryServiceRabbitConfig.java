@@ -226,12 +226,8 @@ public class CapabilityRegistryServiceRabbitConfig
 
         List<Class<?>> messageClasses = new ArrayList<Class<?>>();
 
-//        messageClasses.add(RegisterDataProviderMessage.class);
-//        messageClasses.add(UnregisterDataProviderMessage.class);
         messageClasses.add(ListDataProvidersMessage.class);
         messageClasses.add(DataProvidersFoundMessage.class);
-//        messageClasses.add(PingDataProviderMessage.class);
-//        messageClasses.add(DataProviderPongMessage.class);
 
         final MessageAnnotationProcessor messageAnnotationProcessor = new MessageAnnotationProcessor();
 
@@ -299,37 +295,7 @@ public class CapabilityRegistryServiceRabbitConfig
     {
         return new TopicExchange(EXCHANGE_HDP_CAPABILITY_REGISTRY_RESPONSE);
     }
-
-    
-//    /**
-//     * This returns the <code>TopicExchange</code> for the service heartbeat
-//     * messages.
-//     *
-//     * @return  The <code>TopicExchange</code> for heartbeat messages.
-//     * 
-//     * @since   1.0
-//     */
-//    @Bean
-//    TopicExchange capabilityRegistryHeartbeatExchange()
-//    {
-//        return new TopicExchange(EXCHANGE_HDP_CAPABILITY_REGISTRY_HEARTBEAT);
-//    }
-//    
-//    
-//    /**
-//     * This returns the <code>FanoutExchange</code> for the service control
-//     * messages.
-//     *
-//     * @return  The <code>FanoutExchange</code> for control messages.
-//     * 
-//     * @since   1.0
-//     */
-//    @Bean
-//    FanoutExchange capabilityRegistryControlExchange()
-//    {
-//        return new FanoutExchange(EXCHANGE_HDP_CAPABILITY_REGISTRY_CONTROL);
-//    }
-//    
+ 
     
     /**
      * This returns the <code>Queue</code> for response messages from the
@@ -391,54 +357,6 @@ public class CapabilityRegistryServiceRabbitConfig
                 to(capabilityRegistryResponseExchange()).
                 with(binding);
     }
-    
-    
-//    /**
-//     * This returns the <code>Queue</code> for control messages from the
-//     * service.
-//     *
-//     * @return  The <code>Queue</code> for service control messages.
-//     * 
-//     * @since   1.0
-//     */
-//    @Bean
-//    Queue capabilityRegistryControlQueue()
-//    {
-//        final String bindingPostFix = this.getResponseQueuePostfix();
-//
-//        final StringBuilder builder = new StringBuilder();
-//
-//        builder.append(QUEUE_HDP_CAPABILITY_REGISTRY_CONTROL);
-//        builder.append(".");
-//        builder.append(bindingPostFix);
-//
-//        final String queueName = builder.toString();
-//
-//        Object[] lparams = {queueName};
-//        LOGGER.info(HDCRMessageCode.SERVICE_RESPONSE_QUEUE_I.getMessageCode(), lparams);
-//        
-//        boolean stateful = this.consumerContextConfig.stateful();
-//
-//        final Queue queue = new Queue(queueName, true, false, !stateful);
-//
-//        return queue;
-//    }
-//
-//    
-//    /**
-//     * This returns the <code>Binding</code> for the service control message
-//     * queue and exchange.
-//     *
-//     * @return  The <code>Binding</code> for the service control message queue.
-//     * 
-//     * @since   1.0
-//     */
-//    @Bean
-//    public Binding capabilityRegistryControlQueueBinding()
-//    {
-//        return BindingBuilder.bind(capabilityRegistryControlQueue()).
-//                to(capabilityRegistryControlExchange());
-//    }
     
 
     /**

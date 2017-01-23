@@ -139,12 +139,11 @@ public class AmqpCapabilityRegistryControlConsumer extends UnhandledMessageConsu
         }
 
         final String correlationId = messageProperties.getCorrelationId();
-        final String replyTo = messageProperties.getReplyTo();
-        
+
         try
         {
             this.capabilityRegistryControlProducer.publishDataProviderPong(
-                correlationId, replyTo, this.dataProvider);
+                correlationId, this.dataProvider);
             
         } catch (CapabilityRegistryException exception)
         {

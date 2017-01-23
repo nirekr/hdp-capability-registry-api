@@ -49,27 +49,16 @@ public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityReg
      */
     private static final ILogger LOGGER = 
             HDCRLoggingManager.getLogger(AmqpCapabilityRegistryControlProducer.class);
-    
-    /*
-     * The routing for the capability profile registry message queue
-     */
-    private static final String ROUTING_HDP_CAPABILITY_REGISTRY_REQUEST = 
-                                "dell.cpsd.hdp.capability.registry.request";
-    
+
     /*
      * The RabbitMQ template used by the producer.
      */
     private RabbitTemplate rabbitTemplate;
 
     /*
-     * The service request <code>Exchange</code>.
+     * The service registration <code>Exchange</code>.
      */
-    private Exchange capabilityRegistryRequestExchange;
-    
-    /*
-     * The service heartbeat <code>Exchange</code>.
-     */
-    private Exchange capabilityRegistryHeartbeatExchange;
+    private Exchange exchange;
 
     /*
      * The host name of the client.
@@ -86,8 +75,7 @@ public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityReg
      * AmqpCapabilityRegistryControlProducer constructor.
      *
      * @param   rabbitTemplate  The RabbitMQ template.
-     * @param   capabilityRegistryRequestExchange   The service request exchange.
-     * @param   capabilityRegistryHeartbeatExchange The service heartbeat exchange.
+     * @param   exchange        The service registration exchange.
      * @param   hostname        The host name of the client.
      * 
      * @throws  IllegalArgumentException Thrown if the parameters are null.
@@ -95,8 +83,7 @@ public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityReg
      * @since   1.0
      */
     public AmqpCapabilityRegistryControlProducer(final RabbitTemplate rabbitTemplate, 
-            final Exchange capabilityRegistryRequestExchange, 
-            final Exchange capabilityRegistryHeartbeatExchange, final String hostname)
+            final Exchange exchange, final String hostname)
     {
         super();
 
@@ -104,8 +91,7 @@ public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityReg
 
         this.setRabbitTemplate(rabbitTemplate);
 
-        this.setCapabilityRegistryRequestExchange(capabilityRegistryRequestExchange);
-        this.setCapabilityRegistryHeartbeatExchange(capabilityRegistryHeartbeatExchange);
+        this.setExchange(exchange);
 
         this.setHostname(hostname);
     }
@@ -133,7 +119,7 @@ public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityReg
             StringBuilder builder = new StringBuilder();
 
             builder.append(" publishRegisterDataProvider : ");
-            builder.append("exchange [").append(this.capabilityRegistryRequestExchange.getName());
+            builder.append("exchange [").append(this.exchange.getName());
             builder.append("], message [").append(message).append("]");
 
             LOGGER.debug(builder.toString());
@@ -141,8 +127,10 @@ public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityReg
 
         try
         {
-            rabbitTemplate.convertAndSend(this.capabilityRegistryRequestExchange.getName(), 
-                    ROUTING_HDP_CAPABILITY_REGISTRY_REQUEST, message, messagePostProcessor);
+            rabbitTemplate.convertAndSend(this.exchange.getName(), 
+                    "", 
+                    message, 
+                    messagePostProcessor);
         }
         catch (Exception exception)
         {
@@ -176,7 +164,7 @@ public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityReg
             StringBuilder builder = new StringBuilder();
 
             builder.append(" publishUnregisterDataProvider : ");
-            builder.append("exchange [").append(this.capabilityRegistryRequestExchange.getName());
+            builder.append("exchange [").append(this.exchange.getName());
             builder.append("], message [").append(message).append("]");
 
             LOGGER.debug(builder.toString());
@@ -184,8 +172,10 @@ public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityReg
 
         try
         {
-            rabbitTemplate.convertAndSend(this.capabilityRegistryRequestExchange.getName(), 
-                    ROUTING_HDP_CAPABILITY_REGISTRY_REQUEST, message, messagePostProcessor);
+            rabbitTemplate.convertAndSend(this.exchange.getName(), 
+                    "", 
+                    message,
+                    messagePostProcessor);
         }
         catch (Exception exception)
         {
@@ -202,7 +192,7 @@ public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityReg
      */
     @Override
     public void publishDataProviderPong(final String correlationId,
-            final String replyTo, final DataProvider dataProvider)
+                final DataProvider dataProvider)
         throws CapabilityRegistryException
     {
         final DefaultMessageProperties messageProperties = 
@@ -219,7 +209,7 @@ public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityReg
             StringBuilder builder = new StringBuilder();
 
             builder.append(" publishDataProviderPong : ");
-            builder.append("exchange [").append(this.capabilityRegistryHeartbeatExchange.getName());
+            builder.append("exchange [").append(this.exchange.getName());
             builder.append("], message [").append(message).append("]");
 
             LOGGER.debug(builder.toString());
@@ -227,8 +217,10 @@ public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityReg
 
         try
         {
-            rabbitTemplate.convertAndSend(this.capabilityRegistryHeartbeatExchange.getName(), 
-                    replyTo, message, messagePostProcessor);
+            rabbitTemplate.convertAndSend(this.exchange.getName(), 
+                    "", 
+                    message, 
+                    messagePostProcessor);
         }
         catch (Exception exception)
         {
@@ -238,75 +230,39 @@ public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityReg
             throw new CapabilityRegistryException(lmessage, exception);
         }
     }
-
-
+    
+    
     /**
-     * This returns the service request <code>Exchange</code> for this producer.
+     * This returns the exchange <code>Exchange</code> for this producer.
      *
-     * @return  The service request <code>Exchange</code> for this producer.
+     * @return  The exchange <code>Exchange</code> for this producer.
      * 
      * @since   1.0
      */
-    public Exchange getCapabilityRegistryRequestExchange()
+    public Exchange getExchange()
     {
-        return this.capabilityRegistryRequestExchange;
+        return this.exchange;
     }
     
 
     /**
-     * This sets the service request <code>Exchange</code> for this producer.
+     * This sets the registration <code>Exchange</code> for this producer.
      *
-     * @param   capabilityRegistryRequestExchange    The <code>Exchange</code>.
+     * @param   exchange    The registration <code>Exchange</code>.
      * 
      * @throws  IllegalArgumentException Thrown if the exchange is null.
      * 
      * @since   1.0
      */
-    public void setCapabilityRegistryRequestExchange(
-                        final Exchange capabilityRegistryRequestExchange)
+    public void setExchange(final Exchange exchange)
     {
-        if (capabilityRegistryRequestExchange == null)
+        if (exchange == null)
         {
             throw new IllegalArgumentException(
-                                 "The service request exchange is not set.");
+                                "The capability registration exchange is not set.");
         }
 
-        this.capabilityRegistryRequestExchange = capabilityRegistryRequestExchange;
-    }
-    
-    
-    /**
-     * This returns the <code>Exchange</code> for this producer.
-     *
-     * @return  The <code>Exchange</code> for this producer.
-     * 
-     * @since   1.0
-     */
-    public Exchange getCapabilityRegistryHeartbeatExchange()
-    {
-        return this.capabilityRegistryHeartbeatExchange;
-    }
-    
-
-    /**
-     * This sets the service heartbeat <code>Exchange</code> for this producer.
-     *
-     * @param   capabilityRegistryHeartbeatExchange The <code>Exchange</code>.
-     * 
-     * @throws  IllegalArgumentException Thrown if the exchange is null.
-     * 
-     * @since   1.0
-     */
-    public void setCapabilityRegistryHeartbeatExchange(
-                        final Exchange capabilityRegistryHeartbeatExchange)
-    {
-        if (capabilityRegistryHeartbeatExchange == null)
-        {
-            throw new IllegalArgumentException(
-                                "The service heartbeat exchange is not set.");
-        }
-
-        this.capabilityRegistryHeartbeatExchange = capabilityRegistryHeartbeatExchange;
+        this.exchange = exchange;
     }
     
 

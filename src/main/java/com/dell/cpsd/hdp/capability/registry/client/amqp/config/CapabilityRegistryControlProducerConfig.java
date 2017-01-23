@@ -56,20 +56,13 @@ public class CapabilityRegistryControlProducerConfig
     @Autowired
     @Qualifier("hostName")
     private String hostname;
-
-    /*
-     * The service request exchange.
-     */
-    @Autowired
-    @Qualifier("capabilityRegistryRequestExchange")
-    private Exchange capabilityRegistryRequestExchange;
     
     /*
-     * The service request exchange.
+     * The service registration exchange.
      */
     @Autowired
-    @Qualifier("capabilityRegistryHeartbeatExchange")
-    private Exchange capabilityRegistryHeartbeatExchange;
+    @Qualifier("capabilityRegistryRegistrationExchange")
+    private Exchange capabilityRegistryRegistrationExchange;
     
 
     /**
@@ -85,8 +78,7 @@ public class CapabilityRegistryControlProducerConfig
     {
         return new AmqpCapabilityRegistryControlProducer(
                 this.capabilityRegistryRabbitTemplate, 
-                this.capabilityRegistryRequestExchange, 
-                this.capabilityRegistryHeartbeatExchange, 
+                this.capabilityRegistryRegistrationExchange, 
                 this.hostname);
     }
     

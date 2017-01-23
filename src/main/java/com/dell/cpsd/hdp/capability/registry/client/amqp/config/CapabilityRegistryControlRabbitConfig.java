@@ -82,18 +82,12 @@ public class CapabilityRegistryControlRabbitConfig
 
     private static final String ISO8601_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSX";
     
-    
     /**
-     * The name of the capability profile registry request exchange
+     * The name of the capability profile registry registration exchange
      */
-    public static final String EXCHANGE_HDP_CAPABILITY_REGISTRY_REQUEST = 
-                         "exchange.dell.cpsd.hdp.capability.registry.request";
+    public static final String EXCHANGE_HDP_CAPABILITY_REGISTRY_REGISTRATION = 
+                       "exchange.dell.cpsd.hdp.capability.registry.registration";
     
-    /**
-     * The name of the capability profile registry heartbeat exchange
-     */
-    public static final String EXCHANGE_HDP_CAPABILITY_REGISTRY_HEARTBEAT = 
-                       "exchange.dell.cpsd.hdp.capability.registry.heartbeat";
 
     /*
      * The binding key to the service message control queue.
@@ -271,35 +265,20 @@ public class CapabilityRegistryControlRabbitConfig
             throw new RuntimeException("Unable to identify hostname", e);
         }
     }
-    
 
+    
     /**
-     * This returns the <code>TopicExchange</code> for the service request
+     * This returns the <code>FanoutExchange</code> for the service registration
      * messages.
      *
-     * @return  The <code>TopicExchange</code> for the service requests.
+     * @return  The <code>FanoutExchange</code> for registration messages.
      * 
      * @since   1.0
      */
     @Bean
-    TopicExchange capabilityRegistryRequestExchange()
+    FanoutExchange capabilityRegistryRegistrationExchange()
     {
-        return new TopicExchange(EXCHANGE_HDP_CAPABILITY_REGISTRY_REQUEST);
-    }
-
-    
-    /**
-     * This returns the <code>TopicExchange</code> for the service heartbeat
-     * messages.
-     *
-     * @return  The <code>TopicExchange</code> for heartbeat messages.
-     * 
-     * @since   1.0
-     */
-    @Bean
-    TopicExchange capabilityRegistryHeartbeatExchange()
-    {
-        return new TopicExchange(EXCHANGE_HDP_CAPABILITY_REGISTRY_HEARTBEAT);
+        return new FanoutExchange(EXCHANGE_HDP_CAPABILITY_REGISTRY_REGISTRATION);
     }
     
     
