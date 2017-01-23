@@ -44,13 +44,10 @@ import com.dell.cpsd.common.rabbitmq.consumer.handler.DefaultMessageListenerAdap
 import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryControlConsumer;
 import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.AmqpCapabilityRegistryControlConsumer;
 
-import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.AmqpCapabilityRegistryServiceConsumer;
-import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryServiceConsumer;
-
 import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilityRegistryControlProducer;
 
 /**
- * The configuration for the message consumers.
+ * The configuration for the service control message consumer.
  * <p>
  * <p/>
  * Copyright © 2016 Dell Inc. or its subsidiaries. All Rights Reserved.
@@ -60,12 +57,13 @@ import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilit
  * @since SINCE-TBD
  */
 @Configuration
-public class CapabilityRegistryConsumerConfig
+public class CapabilityRegistryControlConsumerConfig
 {
     /*
      * The logger for this class.
      */
-    private static final ILogger LOGGER = HDCRLoggingManager.getLogger(CapabilityRegistryConsumerConfig.class);
+    private static final ILogger LOGGER = 
+            HDCRLoggingManager.getLogger(CapabilityRegistryControlConsumerConfig.class);
 
     /*
      * The RabbitMQ connection factory.
@@ -79,18 +77,6 @@ public class CapabilityRegistryConsumerConfig
      */
     @Autowired
     private MessageConverter capabilityRegistryMessageConverter;
-
-    /*
-     * The queue for the service response messages.
-     */
-    @Autowired
-    private Queue capabilityRegistryResponseQueue;
-
-    /*
-     * The message queue binding for the service response messages.
-     */
-    @Autowired
-    private Binding capabilityRegistryResponseQueueBinding;
 
     /*
      * The queue for the service control messages.
@@ -109,51 +95,7 @@ public class CapabilityRegistryConsumerConfig
      */
     @Autowired
     private IAmqpCapabilityRegistryControlProducer capabilityRegistryControlProducer;
-    
 
-    /**
-     * The service response message listener container.
-     *
-     * @return  The service response message listener container.
-     * 
-     * @since   1.0
-     */
-    @Bean
-    SimpleMessageListenerContainer capabilityRegistryServiceListenerContainer()
-    {
-        final SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-        container.setConnectionFactory(rabbitConnectionFactory);
-        container.setAcknowledgeMode(AcknowledgeMode.AUTO);
-        container.setQueues(capabilityRegistryResponseQueue);
-        container.setAdviceChain(new Advice[] {retryPolicy()});
-        
-        final DefaultMessageListenerAdapter messageListenerAdapter = 
-                new DefaultMessageListenerAdapter(capabilityRegistryServiceConsumer(), 
-                        capabilityRegistryMessageConverter);
-        
-        container.setMessageListener(messageListenerAdapter);
-        container.setErrorHandler(errorHandler("capabilityRegistryServiceListenerContainer"));
-
-        return container;
-    }
-    
-
-    /**
-     * The message consumer for the service responses.
-     *
-     * @return  The message consumer for the service responses.
-     * 
-     * @since   1.0
-     */
-    @Bean
-    IAmqpCapabilityRegistryServiceConsumer capabilityRegistryServiceConsumer()
-    {
-        final String replyTo = 
-                    this.capabilityRegistryResponseQueueBinding.getRoutingKey();
-
-        return new AmqpCapabilityRegistryServiceConsumer(replyTo);
-    }
-    
     
     /**
      * The service control message listener container.
@@ -162,7 +104,7 @@ public class CapabilityRegistryConsumerConfig
      * 
      * @since   1.0
      */
-    @Bean
+    @Bean(name="capabilityRegistryControlListenerContainer")
     SimpleMessageListenerContainer capabilityRegistryControlListenerContainer()
     {
         final SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();

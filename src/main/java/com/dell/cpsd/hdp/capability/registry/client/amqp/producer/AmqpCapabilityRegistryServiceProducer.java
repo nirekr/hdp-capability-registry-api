@@ -24,9 +24,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import com.dell.cpsd.hdp.capability.registry.api.ProviderCapability;
 import com.dell.cpsd.hdp.capability.registry.api.ProviderIdentity;
 import com.dell.cpsd.hdp.capability.registry.api.DataProvider;
-
-import com.dell.cpsd.hdp.capability.registry.api.RegisterDataProviderMessage;
-import com.dell.cpsd.hdp.capability.registry.api.UnregisterDataProviderMessage;
 import com.dell.cpsd.hdp.capability.registry.api.ListDataProvidersMessage;
 
 import com.dell.cpsd.common.rabbitmq.processor.PropertiesPostProcessor;
@@ -55,7 +52,8 @@ public class AmqpCapabilityRegistryServiceProducer implements IAmqpCapabilityReg
     /*
      * The routing for the capability profile registry message queue
      */
-    private static final String ROUTING_HDP_CAPABILITY_REGISTRY_REQUEST = "dell.cpsd.hdp.capability.registry.request";
+    private static final String ROUTING_HDP_CAPABILITY_REGISTRY_REQUEST = 
+                                "dell.cpsd.hdp.capability.registry.request";
 
     /*
      * The RabbitMQ template used by the producer.
@@ -101,90 +99,6 @@ public class AmqpCapabilityRegistryServiceProducer implements IAmqpCapabilityReg
         this.setExchange(exchange);
 
         this.setHostname(hostname);
-    }
-    
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void publishRegisterDataProvider(final String correlationId,
-            final DataProvider dataProvider)
-        throws CapabilityRegistryException
-    {
-        final DefaultMessageProperties messageProperties = 
-                new DefaultMessageProperties(this.calendar.getTime(), correlationId);
-       
-        final RegisterDataProviderMessage message = new RegisterDataProviderMessage(
-                this.getHostname(), dataProvider);
-
-        final PropertiesPostProcessor messagePostProcessor = 
-                                new PropertiesPostProcessor(messageProperties);
-
-        if (LOGGER.isDebugEnabled())
-        {
-            StringBuilder builder = new StringBuilder();
-
-            builder.append(" publishRegisterDataProvider : ");
-            builder.append("exchange [").append(exchange.getName());
-            builder.append("], message [").append(message).append("]");
-
-            LOGGER.debug(builder.toString());
-        }
-
-        try
-        {
-            rabbitTemplate.convertAndSend(exchange.getName(), ROUTING_HDP_CAPABILITY_REGISTRY_REQUEST, message, messagePostProcessor);
-        }
-        catch (Exception exception)
-        {
-            Object[] lparams = {message, exception.getMessage()};
-            String lmessage = LOGGER.error(HDCRMessageCode.PRODUCER_PUBLISH_E.getMessageCode(), lparams, exception);
-
-            throw new CapabilityRegistryException(lmessage, exception);
-        }
-    }
-    
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void publishUnregisterDataProvider(final String correlationId,
-            final ProviderIdentity identity)
-        throws CapabilityRegistryException
-    {
-        final DefaultMessageProperties messageProperties = 
-                new DefaultMessageProperties(this.calendar.getTime(), correlationId);
-        
-        final UnregisterDataProviderMessage message = new UnregisterDataProviderMessage(
-                this.getHostname(), identity);
-
-        final PropertiesPostProcessor messagePostProcessor = 
-                                new PropertiesPostProcessor(messageProperties);
-        
-        if (LOGGER.isDebugEnabled())
-        {
-            StringBuilder builder = new StringBuilder();
-
-            builder.append(" publishUnregisterDataProvider : ");
-            builder.append("exchange [").append(exchange.getName());
-            builder.append("], message [").append(message).append("]");
-
-            LOGGER.debug(builder.toString());
-        }
-
-        try
-        {
-            rabbitTemplate.convertAndSend(exchange.getName(), ROUTING_HDP_CAPABILITY_REGISTRY_REQUEST, message, messagePostProcessor);
-        }
-        catch (Exception exception)
-        {
-            Object[] lparams = {message, exception.getMessage()};
-            String lmessage = LOGGER.error(HDCRMessageCode.PRODUCER_PUBLISH_E.getMessageCode(), lparams, exception);
-
-            throw new CapabilityRegistryException(lmessage, exception);
-        }
     }
     
     

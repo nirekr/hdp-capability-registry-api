@@ -28,36 +28,6 @@ import com.dell.cpsd.hdp.capability.registry.api.DataProvider;
 public interface IAmqpCapabilityRegistryServiceProducer
 {
     /**
-     * This publishes a message to register a HAL data provider.
-     *
-     * @param   correlationId   The message correlation identifier.
-     * @param   dataProvider    The HAL data provider information.
-     * 
-     * @throws  CapabilityRegistryException Thrown if the registration fails.
-     * 
-     * @since   1.0
-     */
-    public void publishRegisterDataProvider(final String correlationId,
-            final DataProvider dataProvider)
-        throws CapabilityRegistryException;
-
-    
-    /**
-     * This publishes a message to unregister a HAL data provider.
-     *
-     * @param   correlationId   The message correlation identifier.
-     * @param   identity        The HAL data provider identity.
-     * 
-     * @throws  CapabilityRegistryException Thrown if the registration fails.
-     * 
-     * @since   1.0
-     */
-    public void publishUnregisterDataProvider(final String correlationId,
-            final ProviderIdentity identity)
-        throws CapabilityRegistryException;
-    
-    
-    /**
      * This publishes a message to get the list of HAL data providers.
      *
      * @param   correlationId   The message correlation identifier.

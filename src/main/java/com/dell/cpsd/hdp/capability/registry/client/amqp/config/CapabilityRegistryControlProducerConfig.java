@@ -7,9 +7,6 @@ package com.dell.cpsd.hdp.capability.registry.client.amqp.config;
 
 import com.dell.cpsd.common.logging.ILogger;
 
-import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.AmqpCapabilityRegistryServiceProducer;
-import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilityRegistryServiceProducer;
-
 import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.AmqpCapabilityRegistryControlProducer;
 import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilityRegistryControlProducer;
 
@@ -39,12 +36,13 @@ import org.springframework.context.annotation.Configuration;
  * @since   SINCE-TBD
  */
 @Configuration
-public class CapabilityRegistryProducerConfig
+public class CapabilityRegistryControlProducerConfig
 {
     /*
      * The logger for this class.
      */
-    private static final ILogger LOGGER = HDCRLoggingManager.getLogger(CapabilityRegistryProducerConfig.class);
+    private static final ILogger LOGGER = 
+            HDCRLoggingManager.getLogger(CapabilityRegistryControlProducerConfig.class);
 
     /*
      * The Spring RabbitMQ template.
@@ -75,22 +73,6 @@ public class CapabilityRegistryProducerConfig
     
 
     /**
-     * This returns the service message producer that publishes to the request
-     * exchange.
-     *
-     * @return  The service message producer.
-     * 
-     * @since   1.0
-     */
-    @Bean
-    IAmqpCapabilityRegistryServiceProducer capabilityRegistryServiceProducer()
-    {
-        return new AmqpCapabilityRegistryServiceProducer(
-                capabilityRegistryRabbitTemplate, capabilityRegistryRequestExchange, hostname);
-    }
-    
-    
-    /**
      * This returns the service message producer that publishes to the control
      * exchange.
      *
@@ -102,7 +84,10 @@ public class CapabilityRegistryProducerConfig
     IAmqpCapabilityRegistryControlProducer capabilityRegistryControlProducer()
     {
         return new AmqpCapabilityRegistryControlProducer(
-                capabilityRegistryRabbitTemplate, capabilityRegistryHeartbeatExchange, hostname);
+                this.capabilityRegistryRabbitTemplate, 
+                this.capabilityRegistryRequestExchange, 
+                this.capabilityRegistryHeartbeatExchange, 
+                this.hostname);
     }
     
 }

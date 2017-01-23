@@ -22,11 +22,9 @@ import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilit
 
 import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryServiceConsumer;
 import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryMessageHandler;
-import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryControlConsumer;
 
 import com.dell.cpsd.hdp.capability.registry.client.CapabilityRegistryException;
 import com.dell.cpsd.hdp.capability.registry.client.ICapabilityRegistryManager;
-import com.dell.cpsd.hdp.capability.registry.client.ICapabilityRegistryConfiguration;
 
 import com.dell.cpsd.service.common.client.callback.IServiceCallback;
 import com.dell.cpsd.service.common.client.callback.ServiceCallback;
@@ -64,20 +62,15 @@ public class AmqpCapabilityRegistryManager extends AbstractServiceCallbackManage
             HDCRLoggingManager.getLogger(AmqpCapabilityRegistryManager.class);
     
     /*
-     * The configuration used by this service manager
+     * The capability registry service consumer.
      */
-    private ICapabilityRegistryConfiguration configuration              = null;
-
+    private IAmqpCapabilityRegistryServiceConsumer  capabilityRegistryServiceConsumer = null;
+    
     /*
      * The capability registry message producer.
      */
     private IAmqpCapabilityRegistryServiceProducer  capabilityRegistryServiceProducer = null;
     
-    /*
-     * The capability registry service consumer.
-     */
-    private IAmqpCapabilityRegistryServiceConsumer  capabilityRegistryServiceConsumer = null;
-
     
     /**
      * AmqpCapabilityRegistryManager constructor.
@@ -87,62 +80,29 @@ public class AmqpCapabilityRegistryManager extends AbstractServiceCallbackManage
      * @since   1.0
      */
     public AmqpCapabilityRegistryManager(
-                        final ICapabilityRegistryConfiguration configuration)
+            final IAmqpCapabilityRegistryServiceConsumer capabilityRegistryServiceConsumer,
+            final IAmqpCapabilityRegistryServiceProducer capabilityRegistryServiceProducer)
     {
         super();
         
-        if (configuration == null)
+        if (capabilityRegistryServiceConsumer == null)
         {
-            throw new IllegalArgumentException("The configuration is not set.");
+            throw new IllegalArgumentException
+                        ("The capability registry service consumer is null.");
         }
         
-        this.configuration = configuration;
-       
-        this.capabilityRegistryServiceProducer = 
-                     this.configuration.getCapabilityRegistryServiceProducer();
+        this.capabilityRegistryServiceConsumer = capabilityRegistryServiceConsumer;
         
-        this.capabilityRegistryServiceConsumer =
-                     this.configuration.getCapabilityRegistryServiceConsumer();
+        
+        if (capabilityRegistryServiceProducer == null)
+        {
+            throw new IllegalArgumentException
+                        ("The capability registry service producer is null.");
+        }
+        
+        this.capabilityRegistryServiceProducer = capabilityRegistryServiceProducer;
         
         this.capabilityRegistryServiceConsumer.setMessageHandler(this);
-    }
-    
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void registerDataProvider(final ProviderIdentity identity, 
-                        final List<ProviderCapability> capabilities)
-        throws CapabilityRegistryException
-    {
-        // set the provider identity on the control consumer
-        final IAmqpCapabilityRegistryControlConsumer capabilityRegistryControlConsumer =
-                this.configuration.getCapabilityRegistryControlConsumer();
-        
-        final DataProvider dataProvider = new DataProvider(identity, capabilities);
-        
-        // the control consumer is expected to be in the configuration
-        capabilityRegistryControlConsumer.setDataProvider(dataProvider);
-        
-        final String correlationId = UUID.randomUUID().toString();
-        
-        this.capabilityRegistryServiceProducer.publishRegisterDataProvider(
-                correlationId, dataProvider);
-    }
-    
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void unregisterDataProvider(final ProviderIdentity identity)
-        throws CapabilityRegistryException
-    {
-        final String correlationId = UUID.randomUUID().toString();
-        
-        this.capabilityRegistryServiceProducer.publishUnregisterDataProvider(
-                correlationId, identity);
     }
     
     

@@ -28,9 +28,6 @@ import com.dell.cpsd.hdp.capability.registry.client.ICapabilityRegistryManager;
 import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilityRegistryServiceProducer;
 
 import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryServiceConsumer;
-import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryControlConsumer;
-
-import com.dell.cpsd.hdp.capability.registry.client.CapabilityRegistryConfiguration;
 
 /**
  * The configuration for the capability registry manager.
@@ -44,22 +41,16 @@ import com.dell.cpsd.hdp.capability.registry.client.CapabilityRegistryConfigurat
  * @since   SINCE-TBD
  */
 @Configuration
-@Import({CapabilityRegistryRabbitConfig.class, CapabilityRegistryProducerConfig.class, 
-            CapabilityRegistryConsumerConfig.class})
+@Import({CapabilityRegistryServiceRabbitConfig.class, CapabilityRegistryServiceProducerConfig.class, 
+            CapabilityRegistryServiceConsumerConfig.class})
 public class CapabilityRegistryManagerConfig
 {
     /*
      * The logger for this class.
      */
-    private static final ILogger LOGGER = HDCRLoggingManager.getLogger(CapabilityRegistryManagerConfig.class);
+    private static final ILogger LOGGER = 
+            HDCRLoggingManager.getLogger(CapabilityRegistryManagerConfig.class);
 
-
-    /*
-     * The capability registry producer.
-     */
-    @Autowired
-    private IAmqpCapabilityRegistryServiceProducer capabilityRegistryServiceProducer;
-    
     /*
      * The capability registry service consumer.
      */
@@ -68,11 +59,12 @@ public class CapabilityRegistryManagerConfig
     
     
     /*
-     * The capability registry control consumer.
+     * The capability registry service producer.
      */
     @Autowired
-    private IAmqpCapabilityRegistryControlConsumer capabilityRegistryControlConsumer;
+    private IAmqpCapabilityRegistryServiceProducer capabilityRegistryServiceProducer;
     
+
     
     /**
      * This returns the capability registry manager.
@@ -84,11 +76,8 @@ public class CapabilityRegistryManagerConfig
     @Bean
     @Qualifier("capabilityRegistryManager")
     ICapabilityRegistryManager capabilityRegistryManager()
-    {
-        final CapabilityRegistryConfiguration configuration = new CapabilityRegistryConfiguration(
-                capabilityRegistryServiceConsumer, capabilityRegistryServiceProducer,
-                capabilityRegistryControlConsumer);
-        
-        return new AmqpCapabilityRegistryManager(configuration);
+    {  
+        return new AmqpCapabilityRegistryManager(this.capabilityRegistryServiceConsumer,
+                this.capabilityRegistryServiceProducer);
     }
 }
