@@ -13,10 +13,10 @@ import com.dell.cpsd.common.logging.ILogger;
 import com.dell.cpsd.hdp.capability.registry.client.log.HDCRLoggingManager;
 import com.dell.cpsd.hdp.capability.registry.client.log.HDCRMessageCode;
 
-import com.dell.cpsd.hdp.capability.registry.api.ProviderCapability;
-import com.dell.cpsd.hdp.capability.registry.api.ProviderIdentity;
-import com.dell.cpsd.hdp.capability.registry.api.DataProvider;
-import com.dell.cpsd.hdp.capability.registry.api.DataProvidersFoundMessage;
+import com.dell.cpsd.hdp.capability.registry.api.Capability;
+import com.dell.cpsd.hdp.capability.registry.api.Identity;
+import com.dell.cpsd.hdp.capability.registry.api.CapabilityProvider;
+import com.dell.cpsd.hdp.capability.registry.api.CapabilityProvidersFoundMessage;
 
 import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilityRegistryServiceProducer;
 
@@ -37,7 +37,7 @@ import com.dell.cpsd.service.common.client.task.ServiceTask;
 
 import com.dell.cpsd.service.common.client.manager.AbstractServiceCallbackManager;
 
-import com.dell.cpsd.hdp.capability.registry.client.callback.ListDataProvidersResponse;
+import com.dell.cpsd.hdp.capability.registry.client.callback.ListCapabilityProvidersResponse;
 
 import com.dell.cpsd.common.rabbitmq.message.MessagePropertiesContainer;
 
@@ -111,14 +111,14 @@ public class AmqpCapabilityRegistryManager extends AbstractServiceCallbackManage
      *
      * @param   timeout   The timeout in milliseconds.
      * 
-     * @return  The response with the list of available data providers.
+     * @return  The response with the list of available capability providers.
      * 
      * @throw   CapabilityRegistryException Thrown if the request fails.
      * @throw   CapabilityRegistryException Thrown if the request times out.
      * 
      * @since   1.0
      */
-    public ListDataProvidersResponse listDataProviders(final long timeout) 
+    public ListCapabilityProvidersResponse listCapabilityProviders(final long timeout) 
         throws CapabilityRegistryException, ServiceTimeoutException
     {
         if (this.isShutDown())
@@ -130,8 +130,8 @@ public class AmqpCapabilityRegistryManager extends AbstractServiceCallbackManage
         // create a correlation identifier for the operation
         final String requestId = UUID.randomUUID().toString();
 
-        final ServiceCallback<ListDataProvidersResponse> callback = 
-                            new ServiceCallback<ListDataProvidersResponse>();
+        final ServiceCallback<ListCapabilityProvidersResponse> callback = 
+                            new ServiceCallback<ListCapabilityProvidersResponse>();
 
         // the infinite timeout is used for the task because it is handled with     
         // this synchronous call.
@@ -146,7 +146,7 @@ public class AmqpCapabilityRegistryManager extends AbstractServiceCallbackManage
         // publish the list system compliance message to the service
         try
         {
-            this.capabilityRegistryServiceProducer.publishListDataProviders(requestId, replyTo);
+            this.capabilityRegistryServiceProducer.publishListCapabilityProviders(requestId, replyTo);
         }
         catch (Exception exception)
         {
@@ -180,7 +180,7 @@ public class AmqpCapabilityRegistryManager extends AbstractServiceCallbackManage
      * {@inheritDoc}
      */
     @Override
-    public void handleDataProvidersFound(final DataProvidersFoundMessage message,
+    public void handleCapabilityProvidersFound(final CapabilityProvidersFoundMessage message,
             final MessagePropertiesContainer messageProperties)
     {
         if (message == null)
@@ -198,15 +198,15 @@ public class AmqpCapabilityRegistryManager extends AbstractServiceCallbackManage
             return;
         }
 
-        final List<DataProvider> dataProviders = message.getDataProviders();
+        final List<CapabilityProvider> capabilityProviders = message.getCapabilityProviders();
 
-        final ListDataProvidersResponse response = 
-                    new ListDataProvidersResponse(correlationId, dataProviders);
+        final ListCapabilityProvidersResponse response = 
+                    new ListCapabilityProvidersResponse(correlationId, capabilityProviders);
 
         // TODO : Take the callback processing off the message thread
         try
         {
-            ((ServiceCallback<ListDataProvidersResponse>) callback).handleServiceResponse(response);
+            ((ServiceCallback<ListCapabilityProvidersResponse>) callback).handleServiceResponse(response);
         }
         catch (Exception exception)
         {

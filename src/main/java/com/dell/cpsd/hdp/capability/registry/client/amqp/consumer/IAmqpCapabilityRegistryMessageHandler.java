@@ -5,7 +5,7 @@
 
 package com.dell.cpsd.hdp.capability.registry.client.amqp.consumer;
 
-import com.dell.cpsd.hdp.capability.registry.api.DataProvidersFoundMessage;
+import com.dell.cpsd.hdp.capability.registry.api.CapabilityProvidersFoundMessage;
 
 import com.dell.cpsd.common.rabbitmq.message.MessagePropertiesContainer;
 
@@ -24,13 +24,13 @@ import com.dell.cpsd.common.rabbitmq.message.MessagePropertiesContainer;
 public interface IAmqpCapabilityRegistryMessageHandler
 {
     /**
-     * This handles a <code>DataProvidersFoundMessage</code> message.
+     * This handles a <code>CapabilityProvidersFoundMessage</code> message.
      *
      * @param   message             The message to process.
      * @param   messageProperties   The message properties.
      * 
      * @since   1.0
      */
-    public void handleDataProvidersFound(final DataProvidersFoundMessage message,
+    public void handleCapabilityProvidersFound(final CapabilityProvidersFoundMessage message,
             final MessagePropertiesContainer messageProperties);
 }

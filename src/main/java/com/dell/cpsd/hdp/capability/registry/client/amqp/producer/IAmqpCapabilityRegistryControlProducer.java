@@ -10,8 +10,8 @@ import java.util.List;
 
 import com.dell.cpsd.hdp.capability.registry.client.CapabilityRegistryException;
 
-import com.dell.cpsd.hdp.capability.registry.api.DataProvider;
-import com.dell.cpsd.hdp.capability.registry.api.ProviderIdentity;
+import com.dell.cpsd.hdp.capability.registry.api.CapabilityProvider;
+import com.dell.cpsd.hdp.capability.registry.api.Identity;
 
 /**
  * This interface should be implemented by a producer of service control
@@ -28,32 +28,32 @@ import com.dell.cpsd.hdp.capability.registry.api.ProviderIdentity;
 public interface IAmqpCapabilityRegistryControlProducer
 {
     /**
-     * This publishes a message to register a HAL data provider.
+     * This publishes a message to register a capability provider.
      *
-     * @param   correlationId   The message correlation identifier.
-     * @param   dataProvider    The HAL data provider information.
+     * @param   correlationId       The message correlation identifier.
+     * @param   capabilityProvider  The capability provider information.
      * 
      * @throws  CapabilityRegistryException Thrown if the registration fails.
      * 
      * @since   1.0
      */
-    public void publishRegisterDataProvider(final String correlationId,
-            final DataProvider dataProvider)
+    public void publishRegisterCapabilityProvider(final String correlationId,
+            final CapabilityProvider capabilityProvider)
         throws CapabilityRegistryException;
 
     
     /**
-     * This publishes a message to unregister a HAL data provider.
+     * This publishes a message to unregister a capability provider.
      *
      * @param   correlationId   The message correlation identifier.
-     * @param   identity        The HAL data provider identity.
+     * @param   identity        The capability provider identity.
      * 
      * @throws  CapabilityRegistryException Thrown if the registration fails.
      * 
      * @since   1.0
      */
-    public void publishUnregisterDataProvider(final String correlationId,
-            final ProviderIdentity identity)
+    public void publishUnregisterCapabilityProvider(final String correlationId,
+            final Identity identity)
         throws CapabilityRegistryException;
     
     
@@ -61,15 +61,15 @@ public interface IAmqpCapabilityRegistryControlProducer
      * This publishes a pong message to the capability registry registration 
      * exchange.
      *
-     * @param   correlationId   The message correlation identifier.
-     * @param   dataProvider    The HAL data provider information.
+     * @param   correlationId       The message correlation identifier.
+     * @param   capabilityProvider  The capability provider information.
      * 
      * @throws  CapabilityRegistryException Thrown if it fails to send.
      * 
      * @since   1.0
      */
-    public void publishDataProviderPong(final String correlationId,
-            final DataProvider dataProvider)
+    public void publishCapabilityProviderPong(final String correlationId,
+            final CapabilityProvider capabilityProvider)
         throws CapabilityRegistryException;
 
 }

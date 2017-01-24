@@ -19,6 +19,6 @@ import com.dell.cpsd.service.common.client.callback.IServiceCallback;
  * 
  * @since   SINCE-TBD
  */
-public interface IListDataProvidersCallback extends IServiceCallback<ListDataProvidersResponse>
+public interface IListCapabilityProvidersCallback extends IServiceCallback<ListCapabilityProvidersResponse>
 {
 }

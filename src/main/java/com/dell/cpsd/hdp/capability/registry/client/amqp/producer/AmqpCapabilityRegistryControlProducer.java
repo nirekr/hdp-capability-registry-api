@@ -21,11 +21,11 @@ import org.springframework.amqp.core.Exchange;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
-import com.dell.cpsd.hdp.capability.registry.api.DataProvider;
-import com.dell.cpsd.hdp.capability.registry.api.ProviderIdentity;
-import com.dell.cpsd.hdp.capability.registry.api.DataProviderPongMessage;
-import com.dell.cpsd.hdp.capability.registry.api.RegisterDataProviderMessage;
-import com.dell.cpsd.hdp.capability.registry.api.UnregisterDataProviderMessage;
+import com.dell.cpsd.hdp.capability.registry.api.CapabilityProvider;
+import com.dell.cpsd.hdp.capability.registry.api.Identity;
+import com.dell.cpsd.hdp.capability.registry.api.CapabilityProviderPongMessage;
+import com.dell.cpsd.hdp.capability.registry.api.RegisterCapabilityProviderMessage;
+import com.dell.cpsd.hdp.capability.registry.api.UnregisterCapabilityProviderMessage;
 
 import com.dell.cpsd.common.rabbitmq.processor.PropertiesPostProcessor;
 
@@ -101,15 +101,15 @@ public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityReg
      * {@inheritDoc}
      */
     @Override
-    public void publishRegisterDataProvider(final String correlationId,
-            final DataProvider dataProvider)
+    public void publishRegisterCapabilityProvider(final String correlationId,
+            final CapabilityProvider capabilityProvider)
         throws CapabilityRegistryException
     {
         final DefaultMessageProperties messageProperties = 
                 new DefaultMessageProperties(this.calendar.getTime(), correlationId);
        
-        final RegisterDataProviderMessage message = new RegisterDataProviderMessage(
-                this.getHostname(), dataProvider);
+        final RegisterCapabilityProviderMessage message = new RegisterCapabilityProviderMessage(
+                this.getHostname(), capabilityProvider);
 
         final PropertiesPostProcessor messagePostProcessor = 
                                 new PropertiesPostProcessor(messageProperties);
@@ -118,7 +118,7 @@ public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityReg
         {
             StringBuilder builder = new StringBuilder();
 
-            builder.append(" publishRegisterDataProvider : ");
+            builder.append(" publishRegisterCapabilityProvider : ");
             builder.append("exchange [").append(this.exchange.getName());
             builder.append("], message [").append(message).append("]");
 
@@ -146,14 +146,14 @@ public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityReg
      * {@inheritDoc}
      */
     @Override
-    public void publishUnregisterDataProvider(final String correlationId,
-            final ProviderIdentity identity)
+    public void publishUnregisterCapabilityProvider(final String correlationId,
+            final Identity identity)
         throws CapabilityRegistryException
     {
         final DefaultMessageProperties messageProperties = 
                 new DefaultMessageProperties(this.calendar.getTime(), correlationId);
         
-        final UnregisterDataProviderMessage message = new UnregisterDataProviderMessage(
+        final UnregisterCapabilityProviderMessage message = new UnregisterCapabilityProviderMessage(
                 this.getHostname(), identity);
 
         final PropertiesPostProcessor messagePostProcessor = 
@@ -163,7 +163,7 @@ public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityReg
         {
             StringBuilder builder = new StringBuilder();
 
-            builder.append(" publishUnregisterDataProvider : ");
+            builder.append(" publishUnregisterCapabilityProvider : ");
             builder.append("exchange [").append(this.exchange.getName());
             builder.append("], message [").append(message).append("]");
 
@@ -191,15 +191,15 @@ public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityReg
      * {@inheritDoc}
      */
     @Override
-    public void publishDataProviderPong(final String correlationId,
-                final DataProvider dataProvider)
+    public void publishCapabilityProviderPong(final String correlationId,
+                final CapabilityProvider capabilityProvider)
         throws CapabilityRegistryException
     {
         final DefaultMessageProperties messageProperties = 
                 new DefaultMessageProperties(this.calendar.getTime(), correlationId);
         
-        final DataProviderPongMessage message = new DataProviderPongMessage(
-                this.getHostname(), dataProvider);
+        final CapabilityProviderPongMessage message = new CapabilityProviderPongMessage(
+                this.getHostname(), capabilityProvider);
 
         final PropertiesPostProcessor messagePostProcessor = 
                                 new PropertiesPostProcessor(messageProperties);
@@ -208,7 +208,7 @@ public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityReg
         {
             StringBuilder builder = new StringBuilder();
 
-            builder.append(" publishDataProviderPong : ");
+            builder.append(" publishCapabilityProviderPong : ");
             builder.append("exchange [").append(this.exchange.getName());
             builder.append("], message [").append(message).append("]");
 

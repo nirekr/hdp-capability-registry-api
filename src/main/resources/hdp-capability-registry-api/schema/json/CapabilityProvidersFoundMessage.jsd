@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "CapabilityProvidersFoundMessage",
+  "description": "Message with the list of registered capability providers.",
+  "_meta": {
+    "message": "com.dell.cpsd.hdp.capability.registry.capability.providers.found",
+    "version": "1.0"
+  },
+  "properties": {
+    "hostname": {
+      "type": "string"
+    },
+    "capabilityProviders": {
+        "type": "array",
+        "items": {
+            "$ref": "CapabilityProvider.jsd"
+        }
+    }
+  },
+  "required": [
+  ]
+}

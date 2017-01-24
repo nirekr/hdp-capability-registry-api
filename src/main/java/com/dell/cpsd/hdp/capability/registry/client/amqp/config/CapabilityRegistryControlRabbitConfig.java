@@ -47,10 +47,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.dell.cpsd.hdp.capability.registry.api.RegisterDataProviderMessage;
-import com.dell.cpsd.hdp.capability.registry.api.UnregisterDataProviderMessage;
-import com.dell.cpsd.hdp.capability.registry.api.PingDataProviderMessage;
-import com.dell.cpsd.hdp.capability.registry.api.DataProviderPongMessage;
+import com.dell.cpsd.hdp.capability.registry.api.RegisterCapabilityProviderMessage;
+import com.dell.cpsd.hdp.capability.registry.api.UnregisterCapabilityProviderMessage;
+import com.dell.cpsd.hdp.capability.registry.api.PingCapabilityProviderMessage;
+import com.dell.cpsd.hdp.capability.registry.api.CapabilityProviderPongMessage;
 
 /**
  * This is the configuration for the RabbitMQ artifacts used by a client.
@@ -224,10 +224,10 @@ public class CapabilityRegistryControlRabbitConfig
 
         List<Class<?>> messageClasses = new ArrayList<Class<?>>();
 
-        messageClasses.add(RegisterDataProviderMessage.class);
-        messageClasses.add(UnregisterDataProviderMessage.class);
-        messageClasses.add(PingDataProviderMessage.class);
-        messageClasses.add(DataProviderPongMessage.class);
+        messageClasses.add(RegisterCapabilityProviderMessage.class);
+        messageClasses.add(UnregisterCapabilityProviderMessage.class);
+        messageClasses.add(PingCapabilityProviderMessage.class);
+        messageClasses.add(CapabilityProviderPongMessage.class);
 
         final MessageAnnotationProcessor messageAnnotationProcessor = new MessageAnnotationProcessor();
 

@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "CapabilityProviderPongMessage",
+  "description": "The capability provider pong message.",
+  "_meta": {
+    "message": "com.dell.cpsd.hdp.capability.registry.capability.provider.pong",
+    "version": "1.0"
+  },
+  "properties": {
+    "hostname": {
+      "type": "string"
+    },
+    "capabilityProvider": {
+      "$ref": "CapabilityProvider.jsd"
+    }
+  },
+  "required": [
+    "capabilityProvider"
+  ]
+}

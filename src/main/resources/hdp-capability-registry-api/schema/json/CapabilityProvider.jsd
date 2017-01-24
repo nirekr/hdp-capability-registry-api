@@ -1,13 +1,13 @@
 {
     "type": "object",
     "properties": {
-        "providerIdentity": {
-            "$ref": "ProviderIdentity.jsd"
+        "identity": {
+            "$ref": "Identity.jsd"
         },
-        "providerCapabilities": {
+        "capabilities": {
             "type": "array",
             "items": {
-                "$ref": "ProviderCapability.jsd"
+                "$ref": "Capability.jsd"
             }
         }
     },

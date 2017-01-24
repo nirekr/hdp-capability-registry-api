@@ -12,7 +12,7 @@ import com.dell.cpsd.common.rabbitmq.consumer.UnhandledMessageConsumer;
 import com.dell.cpsd.hdp.capability.registry.client.log.HDCRLoggingManager;
 import com.dell.cpsd.hdp.capability.registry.client.log.HDCRMessageCode;
 
-import com.dell.cpsd.hdp.capability.registry.api.DataProvidersFoundMessage;
+import com.dell.cpsd.hdp.capability.registry.api.CapabilityProvidersFoundMessage;
 
 import com.dell.cpsd.common.rabbitmq.message.MessagePropertiesContainer;
 
@@ -103,7 +103,7 @@ public class AmqpCapabilityRegistryServiceConsumer extends UnhandledMessageConsu
     
     
     /**
-     * This handles the <code>DataProvidersFoundMessage</code> that is
+     * This handles the <code>CapabilityProvidersFoundMessage</code> that is
      * consumed from the service queue.
      *
      * @param   message             The message to process.
@@ -111,7 +111,7 @@ public class AmqpCapabilityRegistryServiceConsumer extends UnhandledMessageConsu
      * 
      * @since   1.0
      */
-    public void handleMessage(final DataProvidersFoundMessage message,
+    public void handleMessage(final CapabilityProvidersFoundMessage message,
             final MessagePropertiesContainer messageProperties)
     {
         if (message == null)
@@ -133,7 +133,7 @@ public class AmqpCapabilityRegistryServiceConsumer extends UnhandledMessageConsu
 
         if (this.messageHandler != null)
         {
-            this.messageHandler.handleDataProvidersFound(message, messageProperties);
+            this.messageHandler.handleCapabilityProvidersFound(message, messageProperties);
         }
     }
 }

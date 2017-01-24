@@ -13,9 +13,9 @@ import com.dell.cpsd.common.logging.ILogger;
 import com.dell.cpsd.hdp.capability.registry.client.log.HDCRLoggingManager;
 import com.dell.cpsd.hdp.capability.registry.client.log.HDCRMessageCode;
 
-import com.dell.cpsd.hdp.capability.registry.api.ProviderCapability;
-import com.dell.cpsd.hdp.capability.registry.api.ProviderIdentity;
-import com.dell.cpsd.hdp.capability.registry.api.DataProvider;
+import com.dell.cpsd.hdp.capability.registry.api.Capability;
+import com.dell.cpsd.hdp.capability.registry.api.Identity;
+import com.dell.cpsd.hdp.capability.registry.api.CapabilityProvider;
 
 import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilityRegistryControlProducer;
 
@@ -94,19 +94,19 @@ public class AmqpCapabilityRegistrationManager implements ICapabilityRegistratio
      * {@inheritDoc}
      */
     @Override
-    public void registerDataProvider(final ProviderIdentity identity, 
-                        final List<ProviderCapability> capabilities)
+    public void registerCapabilityProvider(final Identity identity, 
+                        final List<Capability> capabilities)
         throws CapabilityRegistryException
     {
-        final DataProvider dataProvider = new DataProvider(identity, capabilities);
+        final CapabilityProvider capabilityProvider = new CapabilityProvider(identity, capabilities);
         
         // the control consumer is expected to be in the configuration
-        this.capabilityRegistryControlConsumer.setDataProvider(dataProvider);
+        this.capabilityRegistryControlConsumer.setCapabilityProvider(capabilityProvider);
         
         final String correlationId = UUID.randomUUID().toString();
         
-        this.capabilityRegistryControlProducer.publishRegisterDataProvider(
-                correlationId, dataProvider);
+        this.capabilityRegistryControlProducer.publishRegisterCapabilityProvider(
+                correlationId, capabilityProvider);
     }
     
     
@@ -114,12 +114,12 @@ public class AmqpCapabilityRegistrationManager implements ICapabilityRegistratio
      * {@inheritDoc}
      */
     @Override
-    public void unregisterDataProvider(final ProviderIdentity identity)
+    public void unregisterCapabilityProvider(final Identity identity)
         throws CapabilityRegistryException
     {
         final String correlationId = UUID.randomUUID().toString();
         
-        this.capabilityRegistryControlProducer.publishUnregisterDataProvider(
+        this.capabilityRegistryControlProducer.publishUnregisterCapabilityProvider(
                 correlationId, identity);
     }
 }

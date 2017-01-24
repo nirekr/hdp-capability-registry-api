@@ -21,10 +21,10 @@ import org.springframework.amqp.core.Exchange;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
-import com.dell.cpsd.hdp.capability.registry.api.ProviderCapability;
-import com.dell.cpsd.hdp.capability.registry.api.ProviderIdentity;
-import com.dell.cpsd.hdp.capability.registry.api.DataProvider;
-import com.dell.cpsd.hdp.capability.registry.api.ListDataProvidersMessage;
+import com.dell.cpsd.hdp.capability.registry.api.Capability;
+import com.dell.cpsd.hdp.capability.registry.api.Identity;
+import com.dell.cpsd.hdp.capability.registry.api.CapabilityProvider;
+import com.dell.cpsd.hdp.capability.registry.api.ListCapabilityProvidersMessage;
 
 import com.dell.cpsd.common.rabbitmq.processor.PropertiesPostProcessor;
 
@@ -106,14 +106,14 @@ public class AmqpCapabilityRegistryServiceProducer implements IAmqpCapabilityReg
      * {@inheritDoc}
      */
     @Override
-    public void publishListDataProviders(final String correlationId,
+    public void publishListCapabilityProviders(final String correlationId,
             final String replyTo)
         throws CapabilityRegistryException
     {
         final DefaultMessageProperties messageProperties = 
                 new DefaultMessageProperties(this.calendar.getTime(), correlationId, replyTo);   
         
-        final ListDataProvidersMessage message = new ListDataProvidersMessage(
+        final ListCapabilityProvidersMessage message = new ListCapabilityProvidersMessage(
                 this.getHostname());
 
         final PropertiesPostProcessor messagePostProcessor = 
@@ -123,7 +123,7 @@ public class AmqpCapabilityRegistryServiceProducer implements IAmqpCapabilityReg
         {
             StringBuilder builder = new StringBuilder();
 
-            builder.append(" publishListDataProviders : ");
+            builder.append(" publishListCapabilityProviders : ");
             builder.append("exchange [").append(exchange.getName());
             builder.append("], message [").append(message).append("]");
 

@@ -12,8 +12,8 @@ import com.dell.cpsd.common.rabbitmq.consumer.UnhandledMessageConsumer;
 import com.dell.cpsd.hdp.capability.registry.client.log.HDCRLoggingManager;
 import com.dell.cpsd.hdp.capability.registry.client.log.HDCRMessageCode;
 
-import com.dell.cpsd.hdp.capability.registry.api.DataProvider;
-import com.dell.cpsd.hdp.capability.registry.api.PingDataProviderMessage;
+import com.dell.cpsd.hdp.capability.registry.api.CapabilityProvider;
+import com.dell.cpsd.hdp.capability.registry.api.PingCapabilityProviderMessage;
 
 import com.dell.cpsd.common.rabbitmq.message.MessagePropertiesContainer;
 
@@ -47,9 +47,9 @@ public class AmqpCapabilityRegistryControlConsumer extends UnhandledMessageConsu
     private String replyTo = null;
     
     /*
-     * The HAL data provider information
+     * The capability provider information
      */
-    private DataProvider dataProvider = null;
+    private CapabilityProvider capabilityProvider = null;
     
     /*
      * The capability registry control producer
@@ -103,19 +103,19 @@ public class AmqpCapabilityRegistryControlConsumer extends UnhandledMessageConsu
      * {@inheritDoc}
      */
     @Override
-    public void setDataProvider(final DataProvider dataProvider)
+    public void setCapabilityProvider(final CapabilityProvider capabilityProvider)
     {
-        if (dataProvider == null)
+        if (capabilityProvider == null)
         {
-            throw new IllegalArgumentException("The data provider is null");
+            throw new IllegalArgumentException("The capability provider is null");
         }
         
-        this.dataProvider = dataProvider;
+        this.capabilityProvider = capabilityProvider;
     }
 
     
     /**
-     * This handles the <code>PingDataProviderMessage</code> that is
+     * This handles the <code>PingCapabilityProviderMessage</code> that is
      * consumed from the control queue.
      *
      * @param   message             The message to process.
@@ -123,7 +123,7 @@ public class AmqpCapabilityRegistryControlConsumer extends UnhandledMessageConsu
      * 
      * @since   1.0
      */
-    public void handleMessage(final PingDataProviderMessage message,
+    public void handleMessage(final PingCapabilityProviderMessage message,
             final MessagePropertiesContainer messageProperties)
         throws CapabilityRegistryException
     {
@@ -142,8 +142,8 @@ public class AmqpCapabilityRegistryControlConsumer extends UnhandledMessageConsu
 
         try
         {
-            this.capabilityRegistryControlProducer.publishDataProviderPong(
-                correlationId, this.dataProvider);
+            this.capabilityRegistryControlProducer.publishCapabilityProviderPong(
+                correlationId, this.capabilityProvider);
             
         } catch (CapabilityRegistryException exception)
         {

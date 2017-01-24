@@ -9,7 +9,7 @@ import com.dell.cpsd.hdp.capability.registry.client.CapabilityRegistryException;
 
 import com.dell.cpsd.service.common.client.exception.ServiceTimeoutException;
 
-import com.dell.cpsd.hdp.capability.registry.client.callback.ListDataProvidersResponse;
+import com.dell.cpsd.hdp.capability.registry.client.callback.ListCapabilityProvidersResponse;
 
 /**
  * This interface should be implemented by a capability registry manager.
@@ -25,17 +25,17 @@ import com.dell.cpsd.hdp.capability.registry.client.callback.ListDataProvidersRe
 public interface ICapabilityRegistryManager 
 {
     /**
-     * This returns the list of HAL data providers.
+     * This returns the list of capability providers.
      *
      * @param   timeout   The timeout in milliseconds.
      * 
-     * @return  The response with the list of available data providers.
+     * @return  The response with the list of available capability providers.
      * 
      * @throw   CapabilityRegistryException Thrown if the request fails.
      * @throw   ServiceTimeoutException     Thrown if the request times out.
      * 
      * @since   1.0
      */
-    public ListDataProvidersResponse listDataProviders(final long timeout) 
+    public ListCapabilityProvidersResponse listCapabilityProviders(final long timeout) 
         throws CapabilityRegistryException, ServiceTimeoutException;
 }

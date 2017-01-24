@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "CapabilityProviderUnregisteredEvent",
+  "description": "Event that is published when a capability provider is unregistered.",
+  "_meta": {
+    "message": "com.dell.cpsd.hdp.capability.registry.capability.provider.unregistered.event",
+    "version": "1.0"
+  },
+  "properties": {
+    "hostname": {
+      "type": "string"
+    },
+    "identity": {
+      "$ref": "Identity.jsd"
+    }
+  },
+  "required": [
+    "identity"
+  ]
+}

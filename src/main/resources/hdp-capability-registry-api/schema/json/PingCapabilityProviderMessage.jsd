@@ -1,10 +1,10 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
-  "title": "PingDataProviderMessage",
-  "description": "The HAL data provider ping message.",
+  "title": "PingCapabilityProviderMessage",
+  "description": "The capability provider ping message.",
   "_meta": {
-    "message": "com.dell.cpsd.hdp.data.provider.ping",
+    "message": "com.dell.cpsd.hdp.capability.registry.ping.capability.provider",
     "version": "1.0"
   },
   "properties": {

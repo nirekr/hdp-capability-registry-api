@@ -7,7 +7,7 @@ package com.dell.cpsd.hdp.capability.registry.client.callback;
 
 import java.util.List;
 
-import com.dell.cpsd.hdp.capability.registry.api.DataProvider;
+import com.dell.cpsd.hdp.capability.registry.api.CapabilityProvider;
 
 import com.dell.cpsd.service.common.client.callback.ServiceResponse;
 
@@ -22,17 +22,18 @@ import com.dell.cpsd.service.common.client.callback.ServiceResponse;
  * 
  * @since   SINCE-TBD
  */
-public class ListDataProvidersResponse extends ServiceResponse<List<DataProvider>>
+public class ListCapabilityProvidersResponse extends ServiceResponse<List<CapabilityProvider>>
 {
     /**
-     * ListDataProvidersResponse constructor
+     * ListCapabilityProvidersResponse constructor
      *
      * @param   requestId   The request identifier.
      * @param   response    The reponse data.
-     * @since 1.0
+     * 
+     * @since   1.0
      */
-    public ListDataProvidersResponse(
-                    final String requestId, final List<DataProvider> response)
+    public ListCapabilityProvidersResponse(
+                    final String requestId, final List<CapabilityProvider> response)
     {
         super(requestId, response, "");
     }
