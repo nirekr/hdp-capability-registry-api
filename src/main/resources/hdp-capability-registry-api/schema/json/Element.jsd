@@ -1,0 +1,22 @@
+{
+    "type": "object",
+    "properties": {
+        "productFamily": {
+            "type": "string"
+        },
+        "product": {
+            "type": "string"
+        },
+        "modelFamily": {
+            "type": "string"
+        },
+        "model": {
+            "type": "string"
+        },
+        "elementType": {
+            "type": "string"
+        }
+    },
+    "required": [
+    ]
+}

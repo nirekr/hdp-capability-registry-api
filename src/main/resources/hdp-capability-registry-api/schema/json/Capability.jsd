@@ -4,20 +4,11 @@
         "profile": {
             "type": "string"
         },
-        "productFamily": {
-            "type": "string"
-        },
-        "product": {
-            "type": "string"
-        },
-        "modelFamily": {
-            "type": "string"
-        },
-        "model": {
-            "type": "string"
-        },
-        "elementType": {
-            "type": "string"
+        "elements": {
+            "type": "array",
+            "items": {
+                "$ref": "Element.jsd"
+            }
         }   
     },
     "required": [
