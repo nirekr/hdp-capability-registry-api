@@ -1,0 +1,13 @@
+{
+    "type": "object",
+    "properties": {
+        "protocol": {
+            "type": "string"
+        },
+        "type": {
+            "type": "string"
+        }
+    },
+    "required": [
+    ]
+}

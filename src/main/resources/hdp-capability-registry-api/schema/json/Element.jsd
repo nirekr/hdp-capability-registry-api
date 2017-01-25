@@ -1,22 +1,21 @@
 {
     "type": "object",
     "properties": {
-        "productFamily": {
-            "type": "string"
-        },
-        "product": {
-            "type": "string"
-        },
-        "modelFamily": {
-            "type": "string"
-        },
-        "model": {
-            "type": "string"
-        },
         "elementType": {
             "type": "string"
+        },
+        "definition": {
+            "$ref": "Definition.jsd"
+        },
+        "endpoints": {
+            "type": "array",
+            "items": {
+                "$ref": "Endpoint.jsd"
+            }        
         }
     },
     "required": [
+        "elementType",
+        "definition"
     ]
 }
