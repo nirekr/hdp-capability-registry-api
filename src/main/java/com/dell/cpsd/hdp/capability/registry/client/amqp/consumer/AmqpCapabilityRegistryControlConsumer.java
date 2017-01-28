@@ -7,6 +7,8 @@ package com.dell.cpsd.hdp.capability.registry.client.amqp.consumer;
 
 import com.dell.cpsd.common.logging.ILogger;
 
+import org.springframework.amqp.core.MessageProperties;
+
 import com.dell.cpsd.common.rabbitmq.consumer.UnhandledMessageConsumer;
 
 import com.dell.cpsd.hdp.capability.registry.client.log.HDCRLoggingManager;
@@ -15,11 +17,11 @@ import com.dell.cpsd.hdp.capability.registry.client.log.HDCRMessageCode;
 import com.dell.cpsd.hdp.capability.registry.api.CapabilityProvider;
 import com.dell.cpsd.hdp.capability.registry.api.PingCapabilityProviderMessage;
 
-import com.dell.cpsd.common.rabbitmq.message.MessagePropertiesContainer;
-
 import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilityRegistryControlProducer;
 
 import com.dell.cpsd.hdp.capability.registry.client.CapabilityRegistryException;
+
+import com.dell.cpsd.common.rabbitmq.message.MessagePropertiesHelper;
 
 /**
  * This is the message consumer that handles responses from the service.
@@ -124,7 +126,7 @@ public class AmqpCapabilityRegistryControlConsumer extends UnhandledMessageConsu
      * @since   1.0
      */
     public void handleMessage(final PingCapabilityProviderMessage message,
-            final MessagePropertiesContainer messageProperties)
+            final MessageProperties messageProperties)
         throws CapabilityRegistryException
     {
         if (message == null)
@@ -137,8 +139,10 @@ public class AmqpCapabilityRegistryControlConsumer extends UnhandledMessageConsu
         {
             LOGGER.debug(" handleMessage : " + message);
         }
+        
 
-        final String correlationId = messageProperties.getCorrelationId();
+        final String correlationId =
+                MessagePropertiesHelper.getCorrelationId(messageProperties);
 
         try
         {
@@ -147,7 +151,7 @@ public class AmqpCapabilityRegistryControlConsumer extends UnhandledMessageConsu
             
         } catch (CapabilityRegistryException exception)
         {
-            
+            LOGGER.error(exception.getMessage(), exception);
         }
     }
 }

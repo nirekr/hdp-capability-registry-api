@@ -7,7 +7,7 @@ package com.dell.cpsd.hdp.capability.registry.client.amqp.consumer;
 
 import com.dell.cpsd.hdp.capability.registry.api.CapabilityProvidersFoundMessage;
 
-import com.dell.cpsd.common.rabbitmq.message.MessagePropertiesContainer;
+import org.springframework.amqp.core.MessageProperties;
 
 /**
  * This interface should be implemented by a class that handles the processing
@@ -31,6 +31,7 @@ public interface IAmqpCapabilityRegistryMessageHandler
      * 
      * @since   1.0
      */
-    public void handleCapabilityProvidersFound(final CapabilityProvidersFoundMessage message,
-            final MessagePropertiesContainer messageProperties);
+    public void handleCapabilityProvidersFound(
+            final CapabilityProvidersFoundMessage message,
+            final MessageProperties messageProperties);
 }

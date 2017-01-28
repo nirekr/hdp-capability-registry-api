@@ -23,8 +23,7 @@ import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilit
 
 import com.dell.cpsd.hdp.capability.registry.client.CapabilityRegistryException;
 import com.dell.cpsd.hdp.capability.registry.client.ICapabilityRegistrationManager;
-
-import com.dell.cpsd.common.rabbitmq.message.MessagePropertiesContainer;
+import com.dell.cpsd.hdp.capability.registry.client.ICapabilityRegistryNotifier;
 
 /**
  * This is a capability register service client.
@@ -55,6 +54,11 @@ public class AmqpCapabilityRegistrationManager implements ICapabilityRegistratio
      * The capability registry control producer.
      */
     private IAmqpCapabilityRegistryControlProducer capabilityRegistryControlProducer = null;
+    
+    /*
+     * The capability registry notifier
+     */
+    private ICapabilityRegistryNotifier capabilityRegistryNotifier = null;
 
     
     /**
@@ -62,12 +66,14 @@ public class AmqpCapabilityRegistrationManager implements ICapabilityRegistratio
      * 
      * @param   capabilityRegistryControlConsumer   The capability registry control consumer.
      * @param   capabilityRegistryControlProducer   The capability registry control producer.
+     * @param   capabilityRegistryNotifier          The capability registry notifier.
      * 
      * @since   1.0
      */
     public AmqpCapabilityRegistrationManager(
                 final IAmqpCapabilityRegistryControlConsumer capabilityRegistryControlConsumer,
-                final IAmqpCapabilityRegistryControlProducer capabilityRegistryControlProducer)
+                final IAmqpCapabilityRegistryControlProducer capabilityRegistryControlProducer,
+                final ICapabilityRegistryNotifier capabilityRegistryNotifier)
     {
         super();
         
@@ -87,6 +93,15 @@ public class AmqpCapabilityRegistrationManager implements ICapabilityRegistratio
         }
         
         this.capabilityRegistryControlProducer = capabilityRegistryControlProducer;
+        
+        
+        if (capabilityRegistryNotifier == null)
+        {
+            throw new IllegalArgumentException
+                        ("The capability registry notifier is null.");
+        }
+        
+        this.capabilityRegistryNotifier = capabilityRegistryNotifier;
     }
     
     
@@ -98,15 +113,20 @@ public class AmqpCapabilityRegistrationManager implements ICapabilityRegistratio
                         final List<Capability> capabilities)
         throws CapabilityRegistryException
     {
-        final CapabilityProvider capabilityProvider = new CapabilityProvider(identity, capabilities);
+        final CapabilityProvider capabilityProvider = 
+                                new CapabilityProvider(identity, capabilities);
         
         // the control consumer is expected to be in the configuration
         this.capabilityRegistryControlConsumer.setCapabilityProvider(capabilityProvider);
+        
+        this.capabilityRegistryNotifier.setCapabilityProvider(capabilityProvider);
         
         final String correlationId = UUID.randomUUID().toString();
         
         this.capabilityRegistryControlProducer.publishRegisterCapabilityProvider(
                 correlationId, capabilityProvider);
+        
+        this.capabilityRegistryNotifier.start();
     }
     
     
@@ -117,6 +137,12 @@ public class AmqpCapabilityRegistrationManager implements ICapabilityRegistratio
     public void unregisterCapabilityProvider(final Identity identity)
         throws CapabilityRegistryException
     {
+        this.capabilityRegistryControlConsumer.setCapabilityProvider(null);
+        
+        this.capabilityRegistryNotifier.setCapabilityProvider(null);
+        
+        this.capabilityRegistryNotifier.stop();
+        
         final String correlationId = UUID.randomUUID().toString();
         
         this.capabilityRegistryControlProducer.publishUnregisterCapabilityProvider(

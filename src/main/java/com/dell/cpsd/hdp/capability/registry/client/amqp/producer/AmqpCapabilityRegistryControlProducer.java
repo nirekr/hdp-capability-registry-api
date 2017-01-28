@@ -18,6 +18,7 @@ import com.dell.cpsd.hdp.capability.registry.client.log.HDCRLoggingManager;
 import com.dell.cpsd.hdp.capability.registry.client.log.HDCRMessageCode;
 
 import org.springframework.amqp.core.Exchange;
+import org.springframework.amqp.core.MessageProperties;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
@@ -27,9 +28,7 @@ import com.dell.cpsd.hdp.capability.registry.api.CapabilityProviderPongMessage;
 import com.dell.cpsd.hdp.capability.registry.api.RegisterCapabilityProviderMessage;
 import com.dell.cpsd.hdp.capability.registry.api.UnregisterCapabilityProviderMessage;
 
-import com.dell.cpsd.common.rabbitmq.processor.PropertiesPostProcessor;
-
-import com.dell.cpsd.common.rabbitmq.message.DefaultMessageProperties;
+import com.dell.cpsd.common.rabbitmq.producer.AbstractAmqpMessageProducer;
 
 /**
  * This is the message producer that sends control messages to the service.
@@ -42,33 +41,20 @@ import com.dell.cpsd.common.rabbitmq.message.DefaultMessageProperties;
  * 
  * @since   SINCE-TBD
  */
-public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityRegistryControlProducer
+public class AmqpCapabilityRegistryControlProducer extends AbstractAmqpMessageProducer 
+                        implements IAmqpCapabilityRegistryControlProducer
 {
     /*
      * The logger for this class.
      */
     private static final ILogger LOGGER = 
             HDCRLoggingManager.getLogger(AmqpCapabilityRegistryControlProducer.class);
-
+    
     /*
-     * The RabbitMQ template used by the producer.
+     * The name of the exchange bean.
      */
-    private RabbitTemplate rabbitTemplate;
-
-    /*
-     * The service registration <code>Exchange</code>.
-     */
-    private Exchange exchange;
-
-    /*
-     * The host name of the client.
-     */
-    private String hostname = null;
-
-    /*
-     * The <code>Calendar</code> used by this producer.
-     */
-    private Calendar calendar = null;
+    private static final String EXCHANGE_CAPABILITY_REGISTRY_REGISTRATION =
+                                        "capabilityRegistryRegistrationExchange";
 
     
     /**
@@ -85,15 +71,9 @@ public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityReg
     public AmqpCapabilityRegistryControlProducer(final RabbitTemplate rabbitTemplate, 
             final Exchange exchange, final String hostname)
     {
-        super();
+        super(rabbitTemplate, hostname);
 
-        this.calendar = Calendar.getInstance();
-
-        this.setRabbitTemplate(rabbitTemplate);
-
-        this.setExchange(exchange);
-
-        this.setHostname(hostname);
+        this.addExchange(EXCHANGE_CAPABILITY_REGISTRY_REGISTRATION, exchange);
     }
     
     
@@ -105,40 +85,12 @@ public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityReg
             final CapabilityProvider capabilityProvider)
         throws CapabilityRegistryException
     {
-        final DefaultMessageProperties messageProperties = 
-                new DefaultMessageProperties(this.calendar.getTime(), correlationId);
-       
-        final RegisterCapabilityProviderMessage message = new RegisterCapabilityProviderMessage(
-                this.getHostname(), capabilityProvider);
+        final RegisterCapabilityProviderMessage message = 
+                        new RegisterCapabilityProviderMessage(
+                                this.getHostname(), capabilityProvider);
 
-        final PropertiesPostProcessor messagePostProcessor = 
-                                new PropertiesPostProcessor(messageProperties);
-
-        if (LOGGER.isDebugEnabled())
-        {
-            StringBuilder builder = new StringBuilder();
-
-            builder.append(" publishRegisterCapabilityProvider : ");
-            builder.append("exchange [").append(this.exchange.getName());
-            builder.append("], message [").append(message).append("]");
-
-            LOGGER.debug(builder.toString());
-        }
-
-        try
-        {
-            rabbitTemplate.convertAndSend(this.exchange.getName(), 
-                    "", 
-                    message, 
-                    messagePostProcessor);
-        }
-        catch (Exception exception)
-        {
-            Object[] lparams = {message, exception.getMessage()};
-            String lmessage = LOGGER.error(HDCRMessageCode.PRODUCER_PUBLISH_E.getMessageCode(), lparams, exception);
-
-            throw new CapabilityRegistryException(lmessage, exception);
-        }
+        this.sendMessage(correlationId, null, 
+                EXCHANGE_CAPABILITY_REGISTRY_REGISTRATION, "", message);
     }
     
 
@@ -150,40 +102,12 @@ public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityReg
             final Identity identity)
         throws CapabilityRegistryException
     {
-        final DefaultMessageProperties messageProperties = 
-                new DefaultMessageProperties(this.calendar.getTime(), correlationId);
-        
-        final UnregisterCapabilityProviderMessage message = new UnregisterCapabilityProviderMessage(
-                this.getHostname(), identity);
+        final UnregisterCapabilityProviderMessage message = 
+                        new UnregisterCapabilityProviderMessage(
+                                            this.getHostname(), identity);
 
-        final PropertiesPostProcessor messagePostProcessor = 
-                                new PropertiesPostProcessor(messageProperties);
-        
-        if (LOGGER.isDebugEnabled())
-        {
-            StringBuilder builder = new StringBuilder();
-
-            builder.append(" publishUnregisterCapabilityProvider : ");
-            builder.append("exchange [").append(this.exchange.getName());
-            builder.append("], message [").append(message).append("]");
-
-            LOGGER.debug(builder.toString());
-        }
-
-        try
-        {
-            rabbitTemplate.convertAndSend(this.exchange.getName(), 
-                    "", 
-                    message,
-                    messagePostProcessor);
-        }
-        catch (Exception exception)
-        {
-            Object[] lparams = {message, exception.getMessage()};
-            String lmessage = LOGGER.error(HDCRMessageCode.PRODUCER_PUBLISH_E.getMessageCode(), lparams, exception);
-
-            throw new CapabilityRegistryException(lmessage, exception);
-        }
+        this.sendMessage(correlationId, null, 
+                EXCHANGE_CAPABILITY_REGISTRY_REGISTRATION, "", message);
     }
     
 
@@ -195,139 +119,52 @@ public class AmqpCapabilityRegistryControlProducer implements IAmqpCapabilityReg
                 final CapabilityProvider capabilityProvider)
         throws CapabilityRegistryException
     {
-        final DefaultMessageProperties messageProperties = 
-                new DefaultMessageProperties(this.calendar.getTime(), correlationId);
-        
-        final CapabilityProviderPongMessage message = new CapabilityProviderPongMessage(
-                this.getHostname(), capabilityProvider);
-
-        final PropertiesPostProcessor messagePostProcessor = 
-                                new PropertiesPostProcessor(messageProperties);
-
-        if (LOGGER.isDebugEnabled())
+        // if there is no capability provider registered then don't publish
+        if (capabilityProvider == null)
         {
-            StringBuilder builder = new StringBuilder();
-
-            builder.append(" publishCapabilityProviderPong : ");
-            builder.append("exchange [").append(this.exchange.getName());
-            builder.append("], message [").append(message).append("]");
-
-            LOGGER.debug(builder.toString());
+            LOGGER.warn(HDCRMessageCode.NO_CAPABILITY_PROVIDER_W.getMessageCode());
+            return;
         }
+        
+        final CapabilityProviderPongMessage message = 
+                        new CapabilityProviderPongMessage(
+                                this.getHostname(), capabilityProvider);
 
+        this.sendMessage(correlationId, null, 
+                EXCHANGE_CAPABILITY_REGISTRY_REGISTRATION, "", message);
+    }
+        
+        
+    /**
+     * This publishes a message to a specified exchange.
+     * 
+     * @param   correlationId   The correlation identifier.
+     * @param   replyTo         The reply to destination.
+     * @param   exchangeName    The exchange to publish on.
+     * @param   routingKey      The routing key.
+     * @param   message         The message to publish.
+     * 
+     * throws   CapabilityRegistryException   Thrown if the message fails to publish.
+     * 
+     * @since   1.0
+     */
+    protected void sendMessage(final String correlationId, final String replyTo,
+            final String exchangeName, final String routingKey, final Object message)
+        throws CapabilityRegistryException
+    {
         try
         {
-            rabbitTemplate.convertAndSend(this.exchange.getName(), 
-                    "", 
-                    message, 
-                    messagePostProcessor);
-        }
+            this.publishMessage(
+                    correlationId, replyTo, exchangeName, routingKey, message);
+        } 
         catch (Exception exception)
         {
-            Object[] lparams = {message, exception.getMessage()};
-            String lmessage = LOGGER.error(HDCRMessageCode.PRODUCER_PUBLISH_E.getMessageCode(), lparams, exception);
+            final Object[] logParams = {message, exception.getMessage()};
+            final String logMessage = LOGGER.error(
+                                HDCRMessageCode.PRODUCER_PUBLISH_E.getMessageCode(), 
+                                logParams, exception);
 
-            throw new CapabilityRegistryException(lmessage, exception);
-        }
-    }
-    
-    
-    /**
-     * This returns the exchange <code>Exchange</code> for this producer.
-     *
-     * @return  The exchange <code>Exchange</code> for this producer.
-     * 
-     * @since   1.0
-     */
-    public Exchange getExchange()
-    {
-        return this.exchange;
-    }
-    
-
-    /**
-     * This sets the registration <code>Exchange</code> for this producer.
-     *
-     * @param   exchange    The registration <code>Exchange</code>.
-     * 
-     * @throws  IllegalArgumentException Thrown if the exchange is null.
-     * 
-     * @since   1.0
-     */
-    public void setExchange(final Exchange exchange)
-    {
-        if (exchange == null)
-        {
-            throw new IllegalArgumentException(
-                                "The capability registration exchange is not set.");
-        }
-
-        this.exchange = exchange;
-    }
-    
-
-    /**
-     * This returns the <code>RabbitTemplate</code> for this producer.
-     *
-     * @return  The <code>RabbitTemplate</code> for this producer.
-     * 
-     * @since   1.0
-     */
-    public RabbitTemplate getRabbitTemplate()
-    {
-        return this.rabbitTemplate;
-    }
-
-    
-    /**
-     * This sets the <code>RabbitTemplate</code> for this producer.
-     *
-     * @param   rabbitTemplate  The <code>RabbitTemplate</code> for this producer.
-     * 
-     * @throws  IllegalArgumentException    Thrown if the template is null.
-     * 
-     * @since   1.0
-     */
-    public void setRabbitTemplate(RabbitTemplate rabbitTemplate)
-    {
-        if (rabbitTemplate == null)
-        {
-            throw new IllegalArgumentException("The rabbit template is not set.");
-        }
-
-        this.rabbitTemplate = rabbitTemplate;
-    }
-    
-
-    /**
-     * This returns the host name of the client.
-     *
-     * @return  The host name of the client.
-     * 
-     * @since   1.0
-     */
-    public String getHostname()
-    {
-        return this.hostname;
-    }
-    
-
-    /**
-     * This sets the host name of the client.
-     *
-     * @param   hostname    The host name of the client.
-     * 
-     * @throws  IllegalArgumentException    Thrown if the host name is null.
-     * 
-     * @since   1.0
-     */
-    public void setHostname(String hostname)
-    {
-        if (hostname == null)
-        {
-            throw new IllegalArgumentException("The host name is not set.");
-        }
-
-        this.hostname = hostname;
+            throw new CapabilityRegistryException(logMessage, exception);
+        }        
     }
 }

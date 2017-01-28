@@ -11,11 +11,11 @@
     "hostname": {
       "type": "string"
     },
-    "identity": {
-      "$ref": "Identity.jsd"
+    "capabilityProvider": {
+      "$ref": "CapabilityProvider.jsd"
     }
   },
   "required": [
-    "identity"
+    "capabilityProvider"
   ]
 }

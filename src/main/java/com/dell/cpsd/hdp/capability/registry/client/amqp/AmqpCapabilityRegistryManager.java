@@ -39,7 +39,9 @@ import com.dell.cpsd.service.common.client.manager.AbstractServiceCallbackManage
 
 import com.dell.cpsd.hdp.capability.registry.client.callback.ListCapabilityProvidersResponse;
 
-import com.dell.cpsd.common.rabbitmq.message.MessagePropertiesContainer;
+import org.springframework.amqp.core.MessageProperties;
+
+import com.dell.cpsd.common.rabbitmq.message.MessagePropertiesHelper;
 
 /**
  * This is a capability register service client.
@@ -180,16 +182,18 @@ public class AmqpCapabilityRegistryManager extends AbstractServiceCallbackManage
      * {@inheritDoc}
      */
     @Override
-    public void handleCapabilityProvidersFound(final CapabilityProvidersFoundMessage message,
-            final MessagePropertiesContainer messageProperties)
+    public void handleCapabilityProvidersFound(
+            final CapabilityProvidersFoundMessage message,
+            final MessageProperties messageProperties)
     {
         if (message == null)
         {
             return;
         }
 
-        final String correlationId = messageProperties.getCorrelationId();
-
+        final String correlationId =
+                    MessagePropertiesHelper.getCorrelationId(messageProperties);
+        
         final IServiceCallback<?> callback = 
                                     this.removeServiceCallback(correlationId);
 

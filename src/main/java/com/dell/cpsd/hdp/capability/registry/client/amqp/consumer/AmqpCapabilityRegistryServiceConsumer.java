@@ -14,7 +14,7 @@ import com.dell.cpsd.hdp.capability.registry.client.log.HDCRMessageCode;
 
 import com.dell.cpsd.hdp.capability.registry.api.CapabilityProvidersFoundMessage;
 
-import com.dell.cpsd.common.rabbitmq.message.MessagePropertiesContainer;
+import org.springframework.amqp.core.MessageProperties;
 
 /**
  * This is the message consumer that handles responses from the service.
@@ -112,7 +112,7 @@ public class AmqpCapabilityRegistryServiceConsumer extends UnhandledMessageConsu
      * @since   1.0
      */
     public void handleMessage(final CapabilityProvidersFoundMessage message,
-            final MessagePropertiesContainer messageProperties)
+            final MessageProperties messageProperties)
     {
         if (message == null)
         {

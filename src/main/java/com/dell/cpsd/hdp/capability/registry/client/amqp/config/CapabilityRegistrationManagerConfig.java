@@ -29,6 +29,10 @@ import com.dell.cpsd.hdp.capability.registry.client.amqp.producer.IAmqpCapabilit
 
 import com.dell.cpsd.hdp.capability.registry.client.amqp.consumer.IAmqpCapabilityRegistryControlConsumer;
 
+import com.dell.cpsd.hdp.capability.registry.client.amqp.notifier.AmqpCapabilityRegistryNotifier;
+
+import com.dell.cpsd.hdp.capability.registry.client.ICapabilityRegistryNotifier;
+
 /**
  * The configuration for the capability registration manager.
  * <p>
@@ -72,11 +76,27 @@ public class CapabilityRegistrationManagerConfig
      * 
      * @since   1.0
      */
-    @Bean
-    @Qualifier("capabilityRegistrationManager")
+    @Bean(name="capabilityRegistrationManager")
     ICapabilityRegistrationManager capabilityRegistrationManager()
     {
-        return new AmqpCapabilityRegistrationManager(capabilityRegistryControlConsumer,
-                capabilityRegistryControlProducer);
+        return new AmqpCapabilityRegistrationManager(
+                this.capabilityRegistryControlConsumer,
+                this.capabilityRegistryControlProducer, 
+                capabilityRegistryNotifier());
+    }
+    
+    
+    /**
+     * This returns the capability registry notifier.
+     *
+     * @return  The capability registry notifier.
+     * 
+     * @since   1.0
+     */
+    @Bean(name="capabilityRegistryNotifier")
+    ICapabilityRegistryNotifier capabilityRegistryNotifier()
+    {
+        return new AmqpCapabilityRegistryNotifier(
+                        5000l, 5000l, this.capabilityRegistryControlProducer);
     }
 }
