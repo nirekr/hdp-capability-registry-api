@@ -9,7 +9,10 @@
             "items": {
                 "$ref": "Element.jsd"
             }
-        }   
+        },
+        "providerEndpoint": {
+            "$ref": "ProviderEndpoint.jsd"
+        }
     },
     "required": [
         "profile"

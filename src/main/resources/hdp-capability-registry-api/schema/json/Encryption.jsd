@@ -1,0 +1,17 @@
+{
+    "type": "object",
+    "properties": {
+        "algorithm": {
+            "type": "string",
+            "description": "This is the algorithm that needs to be used for generating the Key Factory instance"
+        },
+        "publicKeyString": {
+            "type": "string",
+            "description": "This is the ASN.1 encoded public key string"
+        }
+    },
+    "required": [
+        "algorithm",
+        "publicKeyString"
+    ]
+}

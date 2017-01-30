@@ -12,5 +12,7 @@
         }
     },
     "required": [
+        "identity",
+        "capabilities"
     ]
 }

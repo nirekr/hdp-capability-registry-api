@@ -1,0 +1,16 @@
+{
+    "type": "object",
+    "properties": {
+        "protocol": {
+            "type": "string"
+        },
+        "type": {
+            "type": "string"
+        },
+        "encryption": {
+            "$ref": "Encryption.jsd"
+        }
+    },
+    "required": [
+    ]
+}

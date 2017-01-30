@@ -7,10 +7,10 @@
         "definition": {
             "$ref": "Definition.jsd"
         },
-        "endpoints": {
+        "elementEndpoints": {
             "type": "array",
             "items": {
-                "$ref": "Endpoint.jsd"
+                "$ref": "ElementEndpoint.jsd"
             }        
         }
     },
