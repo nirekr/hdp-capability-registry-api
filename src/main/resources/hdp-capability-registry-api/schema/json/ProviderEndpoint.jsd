@@ -9,6 +9,12 @@
         },
         "encryption": {
             "$ref": "Encryption.jsd"
+        },
+        "endpointProperties": {
+            "type": "array",
+            "items": {
+                "$ref": "EndpointProperty.jsd"
+            }
         }
     },
     "required": [
