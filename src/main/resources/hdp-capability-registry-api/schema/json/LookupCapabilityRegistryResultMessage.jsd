@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "CapabilityRegistryLookupResult",
+  "description": "Message with the results of the capability registry lookup",
+  "_meta": {
+    "message": "com.dell.cpsd.hdp.capability.registry.lookup.result",
+    "version": "1.0"
+  },
+  "properties": {
+    "hostname": {
+      "type": "string"
+    },
+    "queryResults": {
+        "type": "array",
+        "items": {
+            "$ref": "QueryResult.jsd"
+        }
+    }
+  },
+  "required": [
+  ]
+}

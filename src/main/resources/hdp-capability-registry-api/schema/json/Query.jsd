@@ -1,0 +1,16 @@
+{
+    "type": "object",
+    "properties": {
+        "identifier": {
+            "type": "string"
+        },
+        "termsQueries": {
+            "type": "array",
+            "items": {
+                "$ref": "TermsQuery.jsd"
+            }
+        }
+    },
+    "required": [
+    ]
+}

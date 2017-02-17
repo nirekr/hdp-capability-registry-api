@@ -1,20 +1,18 @@
 {
     "type": "object",
     "properties": {
-        "protocol": {
+        "scope": {
             "type": "string"
         },
-        "type": {
+        "property": {
             "type": "string"
         },
-        "encryption": {
-            "$ref": "Encryption.jsd"
-        },
-        "endpointProperties": {
+        "values": {
             "type": "array",
             "items": {
-                "$ref": "EndpointProperty.jsd"
+                "type": "string"
             }
+        }
         }
     },
     "required": [

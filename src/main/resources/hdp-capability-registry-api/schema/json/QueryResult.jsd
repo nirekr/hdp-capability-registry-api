@@ -1,0 +1,16 @@
+{
+    "type": "object",
+    "properties": {
+        "identifier": {
+            "type": "string"
+        },
+        "capabilityProviders": {
+            "type": "array",
+            "items": {
+                "$ref": "CapabilityProvider.jsd"
+            }
+        }
+    },
+    "required": [
+    ]
+}
