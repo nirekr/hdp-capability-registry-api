@@ -2,12 +2,16 @@
     "type": "object",
     "properties": {
         "algorithm": {
-            "type": "string",
-            "description": "This is the algorithm that needs to be used for generating the Key Factory instance"
+          "type": "string",
+          "description": "This is the algorithm that needs to be used for generating the Key Factory",
+          "enum": [
+            "RSA",
+            "DSA"
+          ]
         },
         "publicKeyString": {
-            "type": "string",
-            "description": "This is the ASN.1 encoded public key string"
+          "type": "string",
+          "description": "This is the ASN.1 encoded public key string"
         }
     },
     "required": [
