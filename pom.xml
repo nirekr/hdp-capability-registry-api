@@ -11,7 +11,7 @@
     <parent>
         <artifactId>root-parent</artifactId>
         <groupId>com.dell.cpsd</groupId>
-        <version>0.2.3</version>
+        <version>0.2.5</version>
     </parent>
     
     <dependencyManagement>
