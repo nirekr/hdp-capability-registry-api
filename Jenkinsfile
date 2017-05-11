@@ -19,7 +19,7 @@ pipeline {
     stages {
         stage('Compile') {
             steps {
-                sh "mvn -U clean install -DskipTests=true -DskipITs"
+                sh "mvn install -DskipTests=true -DskipITs"
             }
         }
         stage('Unit Testing') {
@@ -34,7 +34,7 @@ pipeline {
                 }
             }
             steps {
-                sh "mvn deploy -Dinternal-repos -DskipTests=true -DskipITs"
+                sh "mvn deploy -DskipTests=true -DskipITs -Dinternal-repos"
             }
         }
         stage('SonarQube Analysis') {
