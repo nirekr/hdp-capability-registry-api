@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "title": "CapabilityProviderPongMessage",
-  "description": "The capability provider pong message.",
+  "description": "The capability provider pong message.\n<p>\nCopyright &copy; 2017 Dell Inc. or its subsidiaries. All Rights Reserved.\nDell EMC Confidential/Proprietary Information\n</p>",
   "_meta": {
     "message": "com.dell.cpsd.hdp.capability.registry.capability.provider.pong",
     "version": "1.0"

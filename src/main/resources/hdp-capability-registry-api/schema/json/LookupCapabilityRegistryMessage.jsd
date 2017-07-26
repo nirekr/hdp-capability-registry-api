@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "title": "LookupCapabilityRegistryMessage",
-  "description": "Message to request the lookup of registered capability providers.",
+  "description": "Message to request the lookup of registered capability providers.\n<p>\nCopyright &copy; 2017 Dell Inc. or its subsidiaries. All Rights Reserved.\nDell EMC Confidential/Proprietary Information\n</p>",
   "_meta": {
     "message": "com.dell.cpsd.hdp.capability.registry.lookup",
     "version": "1.0"

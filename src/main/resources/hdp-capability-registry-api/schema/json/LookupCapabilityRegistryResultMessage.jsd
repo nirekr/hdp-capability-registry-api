@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "title": "CapabilityRegistryLookupResult",
-  "description": "Message with the results of the capability registry lookup",
+  "description": "Message with the results of the capability registry lookup.\n<p>\nCopyright &copy; 2017 Dell Inc. or its subsidiaries. All Rights Reserved.\nDell EMC Confidential/Proprietary Information\n</p>",
   "_meta": {
     "message": "com.dell.cpsd.hdp.capability.registry.lookup.result",
     "version": "1.0"

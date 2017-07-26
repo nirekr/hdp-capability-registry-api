@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "title": "PingCapabilityProviderMessage",
-  "description": "The capability provider ping message.",
+  "description": "The capability provider ping message.\n<p>\nCopyright &copy; 2017 Dell Inc. or its subsidiaries. All Rights Reserved.\nDell EMC Confidential/Proprietary Information\n</p>",
   "_meta": {
     "message": "com.dell.cpsd.hdp.capability.registry.ping.capability.provider",
     "version": "1.0"

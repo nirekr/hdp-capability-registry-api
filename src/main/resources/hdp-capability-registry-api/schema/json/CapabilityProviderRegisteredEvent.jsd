@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "title": "CapabilityProviderRegisteredEvent",
-  "description": "Event that is published when a capability provider is registered.",
+  "description": "Event that is published when a capability provider is registered.\n<p>\nCopyright &copy; 2017 Dell Inc. or its subsidiaries. All Rights Reserved.\nDell EMC Confidential/Proprietary Information\n</p>",
   "_meta": {
     "message": "com.dell.cpsd.hdp.capability.registry.capability.provider.registered.event",
     "version": "1.0"

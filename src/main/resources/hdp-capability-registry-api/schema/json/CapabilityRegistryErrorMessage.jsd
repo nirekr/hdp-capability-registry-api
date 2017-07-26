@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "title": "CapabilityRegistryErrorMessage",
-  "description": "The message sent when there is an error in the capability registry.",
+  "description": "The message sent when there is an error in the capability registry.\n<p>\nCopyright &copy; 2017 Dell Inc. or its subsidiaries. All Rights Reserved.\nDell EMC Confidential/Proprietary Information\n</p>",
   "_meta": {
     "message": "com.dell.cpsd.hdp.capability.registry.error",
     "version": "1.0"

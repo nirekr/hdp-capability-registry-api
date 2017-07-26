@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "title": "RegisterCapabilityProviderMessage",
-  "description": "Message to register a capability provider.",
+  "description": "Message to register a capability provider.\n<p>\nCopyright &copy; 2017 Dell Inc. or its subsidiaries. All Rights Reserved.\nDell EMC Confidential/Proprietary Information\n</p>",
   "_meta": {
     "message": "com.dell.cpsd.hdp.capability.registry.register.capability.provider",
     "version": "1.0"
