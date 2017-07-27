@@ -1,19 +1,72 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
-        <groupId>com.dell.cpsd.hdp.capability.registry</groupId>
-    <artifactId>hdp-capability-registry-api</artifactId>
-    <version>0.2-SNAPSHOT</version>
-
+    <!--
+        Copyright (c) 2017 Dell Inc. or its subsidiaries.  All Rights Reserved.
+    -->
     <parent>
         <artifactId>root-parent</artifactId>
         <groupId>com.dell.cpsd</groupId>
-        <version>0.2.5</version>
+        <version>1.0.0</version>
     </parent>
-    
+
+    <groupId>com.dell.cpsd.hdp.capability.registry</groupId>
+    <artifactId>hdp-capability-registry-api</artifactId>
+    <version>0.2-SNAPSHOT</version>
+
+    <name>hdp-capability-registry-api</name>
+    <description>This repository contains the source code for the capability registry API.
+        This API exposes the interface through which a consumer or provider interacts with the capability registry.
+    </description>
+    <url>https://github.com/dellemc-symphony/hdp-capability-registry-api</url>
+
+    <licenses>
+        <license>
+            <name>Eclipse Public License - v 1.0</name>
+            <url>http://www.eclipse.org/legal/epl-v10.html</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Purna Chamala</name>
+            <email>purna.chamala@dell.com</email>
+            <organization>com.dell.cpsd</organization>
+            <organizationUrl>https://github.com/chamap1</organizationUrl>
+        </developer>
+        <developer>
+            <name>Phani Kalagara</name>
+            <email>phani.kalagara@dell.com</email>
+            <organization>com.dell.cpsd</organization>
+            <organizationUrl>https://github.com/kalagp</organizationUrl>
+        </developer>
+        <developer>
+            <name>Bheemesh Sannapareddi</name>
+            <email>b.sannapareddi@dell.com</email>
+            <organization>com.dell.cpsd</organization>
+            <organizationUrl>https://github.com/sannab2</organizationUrl>
+        </developer>
+        <developer>
+            <name>Aidan Moore</name>
+            <email>aidan.moore@vce.com</email>
+            <organization>com.dell.cpsd</organization>
+            <organizationUrl>https://github.com/moorea4</organizationUrl>
+        </developer>
+        <developer>
+            <name>Alexandra Beall</name>
+            <email>Arthur.Beall@vce.com</email>
+            <organization>com.dell.cpsd</organization>
+            <organizationUrl>https://github.com/bealla</organizationUrl>
+        </developer>
+        <developer>
+            <name>Desmond Collins</name>
+            <email>desmond.collins@dell.com</email>
+            <organization>com.dell.cpsd</organization>
+            <organizationUrl>https://github.com/giddyelysium</organizationUrl>
+        </developer>
+    </developers>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -28,17 +81,17 @@
 
 
     <dependencies>
-        
+
         <dependency>
             <groupId>com.dell.cpsd.common.messaging</groupId>
             <artifactId>common-rabbitmq</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
-             
+
     </dependencies>
 
     <build>
-        
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -58,7 +111,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.jsonschema2pojo</groupId>
                 <artifactId>jsonschema2pojo-maven-plugin</artifactId>
@@ -85,12 +138,13 @@
                             <useLongIntegers>true</useLongIntegers>
                             <includeConstructors>true</includeConstructors>
                             <serializable>true</serializable>
-                            <customAnnotator>com.dell.cpsd.common.contract.enricher.plugins.jsonschema2pojo.MessageAnnotator</customAnnotator>
+                            <customAnnotator>com.dell.cpsd.common.contract.enricher.plugins.jsonschema2pojo.MessageAnnotator
+                            </customAnnotator>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -101,7 +155,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -117,6 +171,11 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco-maven-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
