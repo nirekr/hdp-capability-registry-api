@@ -1,7 +1,7 @@
 # hdp-capability-registry-api
 
 ## Description
-This repository contains the source code for the capability registry API. This API exposes the interface through which a consumer or provider interacts with the capability registry.  The interactions are register or unregister (provider) and list the capability of other providers (consumer). The API is written in JSD and generates a JAVA API.
+Use this API as a consumer or provider to expose the interface for interaction with the capability registry. Interaction means how the other services (provider or consumer) can use the API to register/unregister themselves or list the capabilities of other providers. The API is written in JSD and generates a JAVA API.
 
 ## Documentation
 You can find additional documentation for Project Symphony at [dellemc-symphony.readthedocs.io][documentation].
