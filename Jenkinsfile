@@ -7,6 +7,9 @@ pipeline {
     triggers {
         upstream(upstreamProjects: UPSTREAM_TRIGGERS, threshold: hudson.model.Result.SUCCESS)
     }
+    parameters {
+           choice(choices: 'ON\nOFF', description: 'Please select appropriate flag', name: 'Deploy_Stage')
+    }
     agent {
         node {
             label 'maven-builder'
@@ -32,6 +35,11 @@ pipeline {
                 doCheckout()
             }
         }
+        stage('TravisCI Linter') {
+            steps {
+                doTravisLint()
+            }
+        }
         stage('Compile') {
             steps {
                 sh "mvn clean install -Dmaven.repo.local=.repo -DskipTests=true -DskipITs=true"
@@ -48,13 +56,8 @@ pipeline {
             }
         }
         stage('Deploy') {
-            when {
-                expression {
-                    return env.BRANCH_NAME ==~ /master|develop|release\/.*/
-                }
-            }
             steps {
-                sh "mvn deploy -Dmaven.repo.local=.repo -DskipTests=true -DskipITs=true"
+                doMvnDeploy()
             }
         }
         stage('SonarQube Analysis') {

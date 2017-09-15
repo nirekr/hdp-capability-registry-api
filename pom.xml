@@ -5,17 +5,17 @@
     <!--
         Copyright (c) 2017 Dell Inc. or its subsidiaries.  All Rights Reserved.
     -->
-    <parent>
-        <artifactId>root-parent</artifactId>
-        <groupId>com.dell.cpsd</groupId>
-        <version>1.0.0</version>
-    </parent>
-
     <groupId>com.dell.cpsd.hdp.capability.registry</groupId>
     <artifactId>hdp-capability-registry-api</artifactId>
     <version>0.2-SNAPSHOT</version>
-
     <name>hdp-capability-registry-api</name>
+         
+    <parent>
+        <artifactId>root-parent</artifactId>
+        <groupId>com.dell.cpsd</groupId>
+        <version>1.0.1</version>
+    </parent>
+         
     <description>This repository contains the source code for the capability registry API.
         This API exposes the interface through which a consumer or provider interacts with the capability registry.
     </description>
@@ -67,6 +67,14 @@
         </developer>
     </developers>
 
+    <scm>
+        <connection>scm:git:https://github.com/dellemc-symphony/hdp-capability-registry-api.git</connection>
+        <developerConnection>scm:git:https://github.com/dellemc-symphony/hdp-capability-registry-api.git
+        </developerConnection>
+        <url>https://github.com/dellemc-symphony/hdp-capability-registry-api/tree/master</url>
+        <tag>HEAD</tag>
+    </scm>
+         
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -79,19 +87,15 @@
         </dependencies>
     </dependencyManagement>
 
-
     <dependencies>
-
         <dependency>
             <groupId>com.dell.cpsd.common.messaging</groupId>
             <artifactId>common-rabbitmq</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
-
     </dependencies>
-
+         
     <build>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -111,7 +115,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.jsonschema2pojo</groupId>
                 <artifactId>jsonschema2pojo-maven-plugin</artifactId>
@@ -144,7 +147,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -155,7 +157,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -189,5 +190,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

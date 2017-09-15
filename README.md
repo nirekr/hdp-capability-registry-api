@@ -1,3 +1,10 @@
+[![License](https://img.shields.io/badge/License-EPL%201.0-red.svg)](https://opensource.org/licenses/EPL-1.0)
+[![Build Status](https://travis-ci.org/dellemc-symphony/hdp-capability-registry-api.svg?branch=master)](https://travis-ci.org/dellemc-symphony/hdp-capability-registry-api)
+[![Slack](http://community.codedellemc.com/badge.svg)](https://codecommunity.slack.com/messages/symphony)
+[![Codecov](https://img.shields.io/codecov/c/github/dellemc-symphony/hdp-capability-registry-api.svg)](https://codecov.io/gh/dellemc-symphony/hdp-capability-registry-api)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.dell.cpsd/hdp-capability-registry-api/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dell.cpsd/hdp-capability-registry-api)
+[![Semver](http://img.shields.io/SemVer/2.0.0.png)](http://semver.org/spec/v2.0.0.html)
+
 # hdp-capability-registry-api
 
 ## Description
