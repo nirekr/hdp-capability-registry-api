@@ -5,7 +5,7 @@
     <!--
         Copyright (c) 2017 Dell Inc. or its subsidiaries.  All Rights Reserved.
     -->
-    <groupId>com.dell.cpsd.hdp.capability.registry</groupId>
+    <groupId>com.dell.cpsd</groupId>
     <artifactId>hdp-capability-registry-api</artifactId>
     <version>1.1.0-SNAPSHOT</version>
     <name>hdp-capability-registry-api</name>
