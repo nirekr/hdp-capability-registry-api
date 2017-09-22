@@ -7,13 +7,13 @@
     -->
     <groupId>com.dell.cpsd</groupId>
     <artifactId>hdp-capability-registry-api</artifactId>
-    <version>1.0.0</version>
+    <version>9.9.9-SNAPSHOT</version>
     <name>hdp-capability-registry-api</name>
          
     <parent>
         <artifactId>root-parent</artifactId>
         <groupId>com.dell.cpsd</groupId>
-        <version>1.0.1</version>
+        <version>0.2.5</version>
     </parent>
          
     <description>This repository contains the source code for the capability registry API.
