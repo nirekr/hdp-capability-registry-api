@@ -65,6 +65,42 @@
             <organization>com.dell.cpsd</organization>
             <organizationUrl>https://github.com/giddyelysium</organizationUrl>
         </developer>
+        <developer>
+            <name>Stephen Daly</name>
+            <email>stephen.daly@dell.com</email>
+            <organization>com.dell.cpsd</organization>
+            <organizationUrl>https://github.com/dalys3</organizationUrl>
+        </developer>
+        <developer>
+            <name>Jeff Cheng</name>
+            <email>jeffery.cheng@dell.com</email>
+            <organization>com.dell.cpsd</organization>
+            <organizationUrl>https://github.com/jccheng78</organizationUrl>
+        </developer>
+        <developer>
+            <name>Indushree JP</name>
+            <email>indushree.jp@emc.com</email>
+            <organization>com.dell.cpsd</organization>
+            <organizationUrl>https://github.com/jpi1</organizationUrl>
+        </developer>
+        <developer>
+            <name>Linjong Fogarty</name>
+            <email>linjong.fogarty@dell.com</email>
+            <organization>com.dell.cpsd</organization>
+            <organizationUrl>https://github.com/fogarl1</organizationUrl>
+        </developer>
+        <developer>
+            <name>Stephen Knight</name>
+            <email>stephen.knight@dell.com</email>
+            <organization>com.dell.cpsd</organization>
+            <organizationUrl>https://github.com/sknightvce</organizationUrl>
+        </developer>
+        <developer>
+            <name>Frank Rouse</name>
+            <email>frank.rouse@dell.com</email>
+            <organization>com.dell.cpsd</organization>
+            <organizationUrl>https://github.com/rousef42</organizationUrl>
+        </developer>
     </developers>
 
     <scm>
