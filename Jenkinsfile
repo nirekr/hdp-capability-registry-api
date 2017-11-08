@@ -83,6 +83,11 @@ pipeline {
                 doNexbScanning()
             }
         }
+        stage('Check Stable') {
+            steps {
+                checkstablebranches()
+            }
+        }
     }
     post {
         always {
