@@ -2,9 +2,11 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+         
     <!--
         Copyright (c) 2017 Dell Inc. or its subsidiaries.  All Rights Reserved.
     -->
+         
     <groupId>com.dell.cpsd</groupId>
     <artifactId>hdp-capability-registry-api</artifactId>
     <version>1.0.1-SNAPSHOT</version>
